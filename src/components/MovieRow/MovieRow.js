@@ -30,16 +30,6 @@ function MovieRow({ title, fetchUrl }) {
     };
   }, [data]);
 
-  const fetchMovies = async () => {
-    try {
-      const response = await axios.get(fetchUrl);
-      setMovies(response.data.results);
-      setTimeout(() => calculateMaxScroll(), 0);
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-    }
-  };
-
   const getImageUrl = (path) => {
     return `https://image.tmdb.org/t/p/w300${path}`;
   };
