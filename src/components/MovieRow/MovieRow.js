@@ -1,7 +1,8 @@
 // src/components/MovieRow/MovieRow.js
 import React, { useState, useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleWishlist } from '../../store/slices/wishlistSlice';
 import useFetch from '../../hooks/useFetch';
-import WishlistService from '../../services/WishlistService';
 import './MovieRow.css';
 
 function MovieRow({ title, fetchUrl }) {
@@ -16,7 +17,8 @@ function MovieRow({ title, fetchUrl }) {
   const sliderRef = useRef(null);
   const sliderWindowRef = useRef(null);
 
-  const wishlistService = new WishlistService();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
 
   useEffect(() => {
     if (data) {
@@ -28,6 +30,7 @@ function MovieRow({ title, fetchUrl }) {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
 
   const getImageUrl = (path) => {
@@ -38,7 +41,7 @@ function MovieRow({ title, fetchUrl }) {
 
   const slide = (direction, amount = null) => {
     const slideAmount =
-      amount || sliderWindowRef.current.clientWidth * 0.8;
+      amount || (sliderWindowRef.current ? sliderWindowRef.current.clientWidth * 0.8 : 0);
     let newScrollAmount = scrollAmount;
 
     if (direction === 'left') {
@@ -111,15 +114,14 @@ function MovieRow({ title, fetchUrl }) {
     setScrollAmount((prev) => Math.min(prev, maxScroll));
   };
 
-  const toggleWishlist = (movie) => {
-    wishlistService.toggleWishlist(movie);
-    // 업데이트를 위해 상태를 변경하지 않지만, 필요하다면 추가로 구현
+  const toggleWishlistHandler = (movie) => {
+    dispatch(toggleWishlist(movie));
   };
 
   const isInWishlist = (movieId) => {
-    return wishlistService.isInWishlist(movieId);
+    return wishlist.some((movie) => movie.id === movieId);
   };
-  
+
   if (loading) {
     return (
       <div className="movie-row">
@@ -168,7 +170,7 @@ function MovieRow({ title, fetchUrl }) {
               <div
                 key={movie.id}
                 className="movie-card"
-                onClick={() => toggleWishlist(movie)}
+                onClick={() => toggleWishlistHandler(movie)}
               >
                 <img
                   src={getImageUrl(movie.poster_path)}
