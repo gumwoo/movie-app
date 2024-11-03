@@ -1,10 +1,20 @@
 // src/components/SignIn/SignIn.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../../services/AuthService';
+import useAuth from '../../hooks/useAuth';
 import './SignIn.css';
+import { toast } from 'react-toastify';
 
 function SignIn() {
+  const {
+    isAuthenticated,
+    handleLogin,
+    handleRegister,
+    loading,
+    error,
+  } = useAuth();
+  const navigate = useNavigate();
+
   const [isLoginVisible, setIsLoginVisible] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -21,9 +31,6 @@ function SignIn() {
   const [isRegisterEmailFocused, setIsRegisterEmailFocused] = useState(false);
   const [isRegisterPasswordFocused, setIsRegisterPasswordFocused] = useState(false);
   const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
-
-  const navigate = useNavigate();
-  const authService = new AuthService();
 
   const isLoginFormValid = email && password;
   const isRegisterFormValid =
@@ -85,28 +92,30 @@ function SignIn() {
     }
   };
 
-  const handleLogin = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    authService.tryLogin(email, password).then(
-      () => {
-        navigate('/');
-      },
-      (error) => {
-        alert('Login failed');
-      }
-    );
+    try {
+      await handleLogin(email, password);
+      toast.success('로그인에 성공했습니다!');
+      navigate('/');
+    } catch (err) {
+      toast.error('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
+    }
   };
 
-  const handleRegister = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    authService.tryRegister(registerEmail, registerPassword).then(
-      () => {
-        toggleCard();
-      },
-      (err) => {
-        alert(err.message);
-      }
-    );
+    if (registerPassword !== confirmPassword) {
+      toast.error('비밀번호가 일치하지 않습니다.');
+      return;
+    }
+    try {
+      await handleRegister(registerEmail, registerPassword);
+      toast.success('회원가입에 성공했습니다! 로그인 해주세요.');
+      toggleCard();
+    } catch (err) {
+      toast.error(err || '회원가입에 실패했습니다.');
+    }
   };
 
   return (
@@ -117,7 +126,7 @@ function SignIn() {
           <div id="content-wrapper">
             {/* 로그인 폼 */}
             <div className={`card ${!isLoginVisible ? 'hidden' : ''}`} id="login">
-              <form onSubmit={handleLogin}>
+              <form onSubmit={handleLoginSubmit}>
                 <h1>Sign in</h1>
                 <div className={`input ${isEmailFocused || email ? 'active' : ''}`}>
                   <input
@@ -128,6 +137,7 @@ function SignIn() {
                     onFocus={() => focusInput('email')}
                     onBlur={() => blurInput('email')}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                   <label htmlFor="email">Username or Email</label>
                 </div>
@@ -140,6 +150,7 @@ function SignIn() {
                     onFocus={() => focusInput('password')}
                     onBlur={() => blurInput('password')}
                     onChange={(e) => setPassword(e.target.value)}
+                    required
                   />
                   <label htmlFor="password">Password</label>
                 </div>
@@ -158,7 +169,9 @@ function SignIn() {
                 <span className="checkbox forgot">
                   <a href="#">Forgot Password?</a>
                 </span>
-                <button disabled={!isLoginFormValid}>Login</button>
+                <button type="submit" disabled={!isLoginFormValid || loading}>
+                  {loading ? 'Logging in...' : 'Login'}
+                </button>
               </form>
               <a href="#" className="account-check" onClick={toggleCard}>
                 Don't have an account? <b>Sign up</b>
@@ -167,7 +180,7 @@ function SignIn() {
 
             {/* 회원가입 폼 */}
             <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">
-              <form onSubmit={handleRegister}>
+              <form onSubmit={handleRegisterSubmit}>
                 <h1>Sign up</h1>
                 <div className={`input ${isRegisterEmailFocused || registerEmail ? 'active' : ''}`}>
                   <input
@@ -178,6 +191,7 @@ function SignIn() {
                     onFocus={() => focusInput('registerEmail')}
                     onBlur={() => blurInput('registerEmail')}
                     onChange={(e) => setRegisterEmail(e.target.value)}
+                    required
                   />
                   <label htmlFor="register-email">Email</label>
                 </div>
@@ -194,6 +208,7 @@ function SignIn() {
                     onFocus={() => focusInput('registerPassword')}
                     onBlur={() => blurInput('registerPassword')}
                     onChange={(e) => setRegisterPassword(e.target.value)}
+                    required
                   />
                   <label htmlFor="register-password">Password</label>
                 </div>
@@ -208,6 +223,7 @@ function SignIn() {
                     onFocus={() => focusInput('confirmPassword')}
                     onBlur={() => blurInput('confirmPassword')}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    required
                   />
                   <label htmlFor="confirm-password">Confirm Password</label>
                 </div>
@@ -218,12 +234,15 @@ function SignIn() {
                     checked={acceptTerms}
                     name="acceptTerms"
                     onChange={(e) => setAcceptTerms(e.target.checked)}
+                    required
                   />
                   <label htmlFor="terms" className="read-text">
                     I have read <b>Terms and Conditions</b>
                   </label>
                 </span>
-                <button disabled={!isRegisterFormValid}>Register</button>
+                <button type="submit" disabled={!isRegisterFormValid || loading}>
+                  {loading ? 'Registering...' : 'Register'}
+                </button>
               </form>
               <a href="#" className="account-check" onClick={toggleCard}>
                 Already have an account? <b>Sign in</b>
@@ -237,3 +256,4 @@ function SignIn() {
 }
 
 export default SignIn;
+
