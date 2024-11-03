@@ -2,16 +2,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './SignIn.css';
-import { toast } from 'react-toastify';
 
 function SignIn() {
   const {
-    isAuthenticated,
     handleLogin,
     handleRegister,
     loading,
-    error,
   } = useAuth();
   const navigate = useNavigate();
 
@@ -99,7 +98,7 @@ function SignIn() {
       toast.success('로그인에 성공했습니다!');
       navigate('/');
     } catch (err) {
-      toast.error('로그인에 실패했습니다. 이메일과 비밀번호를 확인하세요.');
+      toast.error(err);
     }
   };
 
@@ -114,7 +113,7 @@ function SignIn() {
       toast.success('회원가입에 성공했습니다! 로그인 해주세요.');
       toggleCard();
     } catch (err) {
-      toast.error(err || '회원가입에 실패했습니다.');
+      toast.error(err);
     }
   };
 
@@ -251,9 +250,9 @@ function SignIn() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
 
 export default SignIn;
-
