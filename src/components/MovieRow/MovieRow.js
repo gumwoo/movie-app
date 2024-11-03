@@ -1,10 +1,11 @@
 // src/components/MovieRow/MovieRow.js
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import useFetch from '../../hooks/useFetch';
 import WishlistService from '../../services/WishlistService';
 import './MovieRow.css';
 
 function MovieRow({ title, fetchUrl }) {
+  const { data, loading, error } = useFetch(fetchUrl);
   const [movies, setMovies] = useState([]);
   const [scrollAmount, setScrollAmount] = useState(0);
   const [showButtons, setShowButtons] = useState(false);
@@ -18,14 +19,16 @@ function MovieRow({ title, fetchUrl }) {
   const wishlistService = new WishlistService();
 
   useEffect(() => {
-    fetchMovies();
+    if (data) {
+      setMovies(data.results);
+      calculateMaxScroll();
+    }
     window.addEventListener('resize', handleResize);
-    calculateMaxScroll();
 
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [data]);
 
   const fetchMovies = async () => {
     try {
@@ -126,6 +129,24 @@ function MovieRow({ title, fetchUrl }) {
   const isInWishlist = (movieId) => {
     return wishlistService.isInWishlist(movieId);
   };
+  
+  if (loading) {
+    return (
+      <div className="movie-row">
+        <h2>{title}</h2>
+        <div className="loading-spinner">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="movie-row">
+        <h2>{title}</h2>
+        <div className="error-message">Failed to load movies.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="movie-row">
