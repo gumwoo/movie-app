@@ -1,11 +1,12 @@
 // src/components/MovieGrid/MovieGrid.js
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import WishlistService from '../../services/WishlistService';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleWishlist } from '../../store/slices/wishlistSlice';
+import useFetch from '../../hooks/useFetch';
 import './MovieGrid.css';
 
 function MovieGrid({ fetchUrl }) {
-  const [movies, setMovies] = useState([]);
+  const { data, loading, error } = useFetch(fetchUrl);
   const [visibleMovieGroups, setVisibleMovieGroups] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowSize, setRowSize] = useState(4);
@@ -13,37 +14,23 @@ function MovieGrid({ fetchUrl }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const gridContainerRef = useRef(null);
 
-  const wishlistService = new WishlistService();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
 
   useEffect(() => {
-    fetchMovies();
+    if (data) {
+      updateVisibleMovies(data.results.slice(0, 120), 1, rowSize, moviesPerPage);
+    }
     calculateLayout();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const fetchMovies = async () => {
-    try {
-      const totalMoviesNeeded = 120;
-      const numberOfPages = Math.ceil(totalMoviesNeeded / 20);
-      let allMovies = [];
-
-      for (let page = 1; page <= numberOfPages; page++) {
-        const response = await axios.get(fetchUrl, {
-          params: {
-            page,
-          },
-        });
-        allMovies = [...allMovies, ...response.data.results];
-      }
-
-      setMovies(allMovies.slice(0, totalMoviesNeeded));
-      updateVisibleMovies(allMovies.slice(0, totalMoviesNeeded));
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-    }
+    // 이제 useFetch가 데이터를 제공하므로 별도의 fetchMovies 함수는 필요 없습니다.
   };
 
   const getImageUrl = (path) => {
@@ -51,7 +38,7 @@ function MovieGrid({ fetchUrl }) {
   };
 
   const updateVisibleMovies = (
-    moviesToShow = movies,
+    moviesToShow = [],
     page = currentPage,
     newRowSize = rowSize,
     newMoviesPerPage = moviesPerPage
@@ -71,13 +58,13 @@ function MovieGrid({ fetchUrl }) {
     setVisibleMovieGroups(groupedMovies);
   };
 
-  const totalPages = Math.ceil(movies.length / moviesPerPage);
+  const totalPages = Math.ceil(120 / moviesPerPage); // 고정된 120개 영화
 
   const nextPage = () => {
     if (currentPage < totalPages) {
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
-      updateVisibleMovies(movies, newPage);
+      updateVisibleMovies(data.results.slice(0, 120), newPage, rowSize, moviesPerPage);
     }
   };
 
@@ -85,7 +72,7 @@ function MovieGrid({ fetchUrl }) {
     if (currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
-      updateVisibleMovies(movies, newPage);
+      updateVisibleMovies(data.results.slice(0, 120), newPage, rowSize, moviesPerPage);
     }
   };
 
@@ -102,18 +89,33 @@ function MovieGrid({ fetchUrl }) {
 
       const newRowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
       setRowSize(newRowSize);
-      updateVisibleMovies(movies, currentPage, newRowSize);
+      updateVisibleMovies(data.results.slice(0, 120), currentPage, newRowSize, moviesPerPage);
     }
   };
 
-  const toggleWishlist = (movie) => {
-    wishlistService.toggleWishlist(movie);
-    // 업데이트를 위해 상태를 변경하지 않지만, 필요하다면 추가로 구현
+  const toggleWishlistHandler = (movie) => {
+    dispatch(toggleWishlist(movie));
   };
 
   const isInWishlist = (movieId) => {
-    return wishlistService.isInWishlist(movieId);
+    return wishlist.some((movie) => movie.id === movieId);
   };
+
+  if (loading) {
+    return (
+      <div className="movie-grid">
+        <div className="loading-spinner">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="movie-grid">
+        <div className="error-message">Failed to load movies.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="movie-grid" ref={gridContainerRef}>
@@ -124,7 +126,7 @@ function MovieGrid({ fetchUrl }) {
               <div
                 key={movie.id}
                 className="movie-card"
-                onClick={() => toggleWishlist(movie)}
+                onClick={() => toggleWishlistHandler(movie)}
               >
                 <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
                 <div className="movie-title">{movie.title}</div>

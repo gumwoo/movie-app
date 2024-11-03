@@ -1,10 +1,10 @@
 // src/components/MovieWishlist/MovieWishlist.js
 import React, { useState, useEffect, useRef } from 'react';
-import WishlistService from '../../services/WishlistService';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleWishlist } from '../../store/slices/wishlistSlice';
 import './MovieWishlist.css';
 
 function MovieWishlist() {
-  const [wishlistMovies, setWishlistMovies] = useState([]);
   const [visibleWishlistMovies, setVisibleWishlistMovies] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowSize, setRowSize] = useState(4);
@@ -12,21 +12,22 @@ function MovieWishlist() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const gridContainerRef = useRef(null);
 
-  const wishlistService = new WishlistService();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
 
   useEffect(() => {
     loadWishlist();
-    handleResize();
+    calculateLayout();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wishlist]);
 
   const loadWishlist = () => {
-    const movies = wishlistService.getCurrentWishlist();
-    setWishlistMovies(movies);
-    updateVisibleMovies(movies);
+    // Redux를 사용하므로 `wishlist` 상태가 이미 최신 상태입니다.
+    updateVisibleMovies(wishlist, 1, rowSize, moviesPerPage);
   };
 
   const getImageUrl = (path) => {
@@ -49,12 +50,12 @@ function MovieWishlist() {
       setRowSize(newRowSize);
       setMoviesPerPage(newMoviesPerPage);
 
-      updateVisibleMovies(wishlistMovies, currentPage, newRowSize, newMoviesPerPage);
+      updateVisibleMovies(wishlist, currentPage, newRowSize, newMoviesPerPage);
     }
   };
 
   const updateVisibleMovies = (
-    movies = wishlistMovies,
+    movies = [],
     page = currentPage,
     newRowSize = rowSize,
     newMoviesPerPage = moviesPerPage
@@ -74,13 +75,13 @@ function MovieWishlist() {
     setVisibleWishlistMovies(groupedMovies);
   };
 
-  const totalPages = Math.ceil(wishlistMovies.length / moviesPerPage);
+  const totalPages = Math.ceil(wishlist.length / moviesPerPage);
 
   const nextPage = () => {
     if (currentPage < totalPages) {
       const newPage = currentPage + 1;
       setCurrentPage(newPage);
-      updateVisibleMovies(wishlistMovies, newPage);
+      updateVisibleMovies(wishlist, newPage, rowSize, moviesPerPage);
     }
   };
 
@@ -88,7 +89,7 @@ function MovieWishlist() {
     if (currentPage > 1) {
       const newPage = currentPage - 1;
       setCurrentPage(newPage);
-      updateVisibleMovies(wishlistMovies, newPage);
+      updateVisibleMovies(wishlist, newPage, rowSize, moviesPerPage);
     }
   };
 
@@ -97,9 +98,9 @@ function MovieWishlist() {
     calculateLayout();
   };
 
-  const toggleWishlist = (movie) => {
-    wishlistService.toggleWishlist(movie);
-    loadWishlist();
+  const toggleWishlistHandler = (movie) => {
+    dispatch(toggleWishlist(movie));
+    // Redux가 상태를 업데이트하므로, `useEffect`가 `wishlist` 상태 변경을 감지하여 자동으로 `updateVisibleMovies`가 호출됩니다.
   };
 
   return (
@@ -108,16 +109,22 @@ function MovieWishlist() {
         {visibleWishlistMovies.map((movieGroup, i) => (
           <div key={i} className={`movie-row ${movieGroup.length === rowSize ? 'full' : ''}`}>
             {movieGroup.map((movie) => (
-              <div key={movie.id} className="movie-card" onClick={() => toggleWishlist(movie)}>
+              <div
+                key={movie.id}
+                className="movie-card"
+                onClick={() => toggleWishlistHandler(movie)}
+              >
                 <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
                 <div className="movie-title">{movie.title}</div>
-                <div className="wishlist-indicator">👍</div>
+                {movie.id && (
+                  <div className="wishlist-indicator">👍</div>
+                )}
               </div>
             ))}
           </div>
         ))}
       </div>
-      {wishlistMovies.length === 0 && (
+      {wishlist.length === 0 && (
         <div className="empty-wishlist">위시리스트가 비어 있습니다.</div>
       )}
       {totalPages > 1 && (
