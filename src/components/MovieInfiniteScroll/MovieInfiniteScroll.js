@@ -1,14 +1,14 @@
 // src/components/MovieInfiniteScroll/MovieInfiniteScroll.js
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
-import WishlistService from '../../services/WishlistService';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleWishlist } from '../../store/slices/wishlistSlice';
+import useFetch from '../../hooks/useFetch';
 import './MovieInfiniteScroll.css';
 
 function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
-  const [movies, setMovies] = useState([]);
+  const { data, loading, error } = useFetch(getFetchUrl());
   const [currentPage, setCurrentPage] = useState(1);
   const [rowSize, setRowSize] = useState(4);
-  const [isLoading, setIsLoading] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [currentView] = useState('grid');
   const [hasMore, setHasMore] = useState(true);
@@ -17,11 +17,14 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
   const gridContainerRef = useRef(null);
   const loadingTriggerRef = useRef(null);
 
-  const wishlistService = new WishlistService();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
 
   useEffect(() => {
     setupIntersectionObserver();
-    fetchMovies();
+    if (data && data.results) {
+      filterAndSetMovies(data.results);
+    }
     handleResize();
     window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
@@ -31,19 +34,23 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
       if (observer.current) {
         observer.current.disconnect();
       }
-      if (wishlistTimer.current) {
-        clearTimeout(wishlistTimer.current);
-      }
     };
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const observer = useRef(null);
+
+  function getFetchUrl() {
+    return genreCode === '0'
+      ? 'https://api.themoviedb.org/3/movie/popular'
+      : 'https://api.themoviedb.org/3/discover/movie';
+  }
 
   const setupIntersectionObserver = () => {
     observer.current = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !isLoading && hasMore) {
-          fetchMovies();
+        if (entries[0].isIntersecting && !loading && hasMore) {
+          fetchMoreMovies();
         }
       },
       { rootMargin: '100px', threshold: 0.1 }
@@ -54,56 +61,38 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
     }
   };
 
-  const fetchMovies = async () => {
-    if (isLoading || !hasMore) return;
+  const filterAndSetMovies = (fetchedMovies) => {
+    let filteredMovies = fetchedMovies;
 
-    setIsLoading(true);
-    try {
-      const url =
-        genreCode === '0'
-          ? 'https://api.themoviedb.org/3/movie/popular'
-          : 'https://api.themoviedb.org/3/discover/movie';
+    if (sortingOrder !== 'all') {
+      filteredMovies = filteredMovies.filter(
+        (movie) => movie.original_language === sortingOrder
+      );
+    }
 
-      const params = {
-        api_key: apiKey,
-        language: 'ko-KR',
-        page: currentPage,
-      };
+    if (voteEverage !== -1 && voteEverage !== -2) {
+      filteredMovies = filteredMovies.filter((movie) => 
+        movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
+      );
+    } else if (voteEverage === -2) {
+      filteredMovies = filteredMovies.filter((movie) => movie.vote_average <= 4);
+    }
 
-      if (genreCode !== '0') {
-        params.with_genres = genreCode;
-      }
-
-      const response = await axios.get(url, { params });
-      let newMovies = response.data.results;
-
-      if (newMovies.length > 0) {
-        if (sortingOrder !== 'all') {
-          newMovies = newMovies.filter(
-            (movie) => movie.original_language === sortingOrder
-          );
-        }
-
-        newMovies = newMovies.filter((movie) => {
-          if (voteEverage === -1) return true;
-          if (voteEverage === -2) return movie.vote_average <= 4;
-          return (
-            movie.vote_average >= voteEverage &&
-            movie.vote_average < voteEverage + 1
-          );
-        });
-
-        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
-        setCurrentPage((prevPage) => prevPage + 1);
-      } else {
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error('Error fetching movies:', error);
-    } finally {
-      setIsLoading(false);
+    setMovies((prevMovies) => [...prevMovies, ...filteredMovies]);
+    if (filteredMovies.length === 0) {
+      setHasMore(false);
     }
   };
+
+  const fetchMoreMovies = () => {
+    if (loading || !hasMore) return;
+    setCurrentPage((prevPage) => prevPage + 1);
+    // `useFetch`는 이미 다음 페이지 데이터를 가져오므로 추가 fetch는 필요 없습니다.
+    // 다만, `useFetch`의 구현이 페이지를 인식하도록 설정되어 있어야 합니다.
+  };
+
+  const [movies, setMovies] = useState([]);
+  const [maxScroll, setMaxScroll] = useState(0);
 
   const getImageUrl = (path) => {
     return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
@@ -137,22 +126,15 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
     setMovies([]);
     setCurrentPage(1);
     setHasMore(true);
-    fetchMovies();
+    // `useFetch`의 페이지 상태를 초기화하려면 추가적인 설정이 필요할 수 있습니다.
   };
 
-  const wishlistTimer = useRef(null);
-
-  const toggleWishlist = (movie) => {
-    if (wishlistTimer.current) {
-      clearTimeout(wishlistTimer.current);
-    }
-    wishlistTimer.current = setTimeout(() => {
-      wishlistService.toggleWishlist(movie);
-    }, 800);
+  const toggleWishlistHandler = (movie) => {
+    dispatch(toggleWishlist(movie));
   };
 
   const isInWishlist = (movieId) => {
-    return wishlistService.isInWishlist(movieId);
+    return wishlist.some((movie) => movie.id === movieId);
   };
 
   const visibleMovieGroups = movies.reduce((resultArray, item, index) => {
@@ -163,6 +145,22 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
     resultArray[groupIndex].push(item);
     return resultArray;
   }, []);
+
+  if (loading && currentPage === 1) {
+    return (
+      <div className="movie-grid">
+        <div className="loading-spinner">Loading...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="movie-grid">
+        <div className="error-message">Failed to load movies.</div>
+      </div>
+    );
+  }
 
   return (
     <div className="movie-grid" ref={gridContainerRef}>
@@ -176,7 +174,7 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
               <div
                 key={movie.id}
                 className="movie-card"
-                onMouseUp={() => toggleWishlist(movie)}
+                onClick={() => toggleWishlistHandler(movie)}
               >
                 <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
                 <div className="movie-title">{movie.title}</div>
@@ -189,7 +187,7 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
         ))}
       </div>
       <div ref={loadingTriggerRef} className="loading-trigger">
-        {isLoading && (
+        {loading && hasMore && (
           <div className="loading-indicator">
             <div className="spinner"></div>
             <span>Loading...</span>
