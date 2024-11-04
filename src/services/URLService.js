@@ -3,7 +3,7 @@ import axios from 'axios';
 
 class URLService {
   constructor() {
-    this.apiKey = 'bae479d1805361a77347b85118e25ecc'; // 실제 API 키로 교체하세요
+    this.apiKey = process.env.REACT_APP_TMDB_API_KEY; // 환경 변수 사용
   }
 
   fetchFeaturedMovie = async () => {
