@@ -10,7 +10,7 @@ function MovieGrid({ fetchUrl }) {
   const [visibleMovieGroups, setVisibleMovieGroups] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [rowSize, setRowSize] = useState(4);
-  const [moviesPerPage, setMoviesPerPage] = useState(20);
+  const [moviesPerPage] = useState(20); // setMoviesPerPage 제거
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const gridContainerRef = useRef(null);
 
@@ -28,10 +28,6 @@ function MovieGrid({ fetchUrl }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data]);
-
-  const fetchMovies = async () => {
-    // 이제 useFetch가 데이터를 제공하므로 별도의 fetchMovies 함수는 필요 없습니다.
-  };
 
   const getImageUrl = (path) => {
     return `https://image.tmdb.org/t/p/w300${path}`;
