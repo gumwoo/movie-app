@@ -166,7 +166,16 @@ function SignIn() {
                   </label>
                 </span>
                 <span className="checkbox forgot">
-                  <a href="#">Forgot Password?</a>
+                  <button
+                    type="button"
+                    className="forgot-password-button"
+                    onClick={() => {
+                      // Implement forgot password functionality or navigate to the appropriate route
+                      toast.info('Forgot Password functionality is not implemented yet.');
+                    }}
+                  >
+                    Forgot Password?
+                  </button>
                 </span>
                 <button type="submit" disabled={!isLoginFormValid || loading}>
                   {loading ? 'Logging in...' : 'Login'}
