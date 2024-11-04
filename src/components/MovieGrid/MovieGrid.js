@@ -2,94 +2,74 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleWishlist } from '../../store/slices/wishlistSlice';
-import useFetch from '../../hooks/useFetch';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import URLService from '../../services/URLService';
+import MovieCard from '../MovieCard/MovieCard';
 import './MovieGrid.css';
 
 function MovieGrid({ fetchUrl }) {
-  const { data, loading, error } = useFetch(fetchUrl);
-  const [visibleMovieGroups, setVisibleMovieGroups] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [rowSize, setRowSize] = useState(4);
-  const [moviesPerPage] = useState(20); // setMoviesPerPage 제거
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const gridContainerRef = useRef(null);
-
+  const urlService = new URLService();
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const gridContainerRef = useRef(null);
 
-  useEffect(() => {
-    if (data) {
-      updateVisibleMovies(data.results.slice(0, 120), 1, rowSize, moviesPerPage);
-    }
-    calculateLayout();
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  const getImageUrl = (path) => {
-    return `https://image.tmdb.org/t/p/w300${path}`;
-  };
-
-  const updateVisibleMovies = (
-    moviesToShow = [],
-    page = currentPage,
-    newRowSize = rowSize,
-    newMoviesPerPage = moviesPerPage
-  ) => {
-    const startIndex = (page - 1) * newMoviesPerPage;
-    const endIndex = startIndex + newMoviesPerPage;
-    const paginatedMovies = moviesToShow.slice(startIndex, endIndex);
-
-    const groupedMovies = paginatedMovies.reduce((resultArray, item, index) => {
-      const groupIndex = Math.floor(index / newRowSize);
-      if (!resultArray[groupIndex]) {
-        resultArray[groupIndex] = [];
+  // 무한 스크롤을 위한 useInfiniteQuery 사용
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    ['movies', fetchUrl],
+    ({ pageParam = 1 }) => {
+      if (fetchUrl.includes('/movie/popular')) {
+        return urlService.fetchPopularMovies(pageParam);
+      } else if (fetchUrl.includes('/movie/now_playing')) {
+        return urlService.fetchNowPlayingMovies(pageParam);
+      } else if (fetchUrl.includes('/discover/movie')) {
+        const url = new URL(fetchUrl);
+        const genre = url.searchParams.get('with_genres');
+        return urlService.fetchMoviesByGenre(genre, pageParam);
       }
-      resultArray[groupIndex].push(item);
-      return resultArray;
-    }, []);
-    setVisibleMovieGroups(groupedMovies);
-  };
-
-  const totalPages = Math.ceil(120 / moviesPerPage); // 고정된 120개 영화
-
-  const nextPage = () => {
-    if (currentPage < totalPages) {
-      const newPage = currentPage + 1;
-      setCurrentPage(newPage);
-      updateVisibleMovies(data.results.slice(0, 120), newPage, rowSize, moviesPerPage);
+      throw new Error('Invalid fetch URL');
+    },
+    {
+      getNextPageParam: (lastPage, pages) => {
+        if (lastPage.length === 0) return undefined; // 더 이상 페이지가 없을 경우
+        return pages.length + 1;
+      },
+      staleTime: 1000 * 60 * 5, // 5분
+      cacheTime: 1000 * 60 * 30, // 30분
     }
-  };
+  );
 
-  const prevPage = () => {
-    if (currentPage > 1) {
-      const newPage = currentPage - 1;
-      setCurrentPage(newPage);
-      updateVisibleMovies(data.results.slice(0, 120), newPage, rowSize, moviesPerPage);
+  // 무한 스크롤을 위한 Intersection Observer 설정
+  const loadMoreRef = useRef();
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: '100px' }
+    );
+
+    if (loadMoreRef.current) {
+      observer.observe(loadMoreRef.current);
     }
-  };
 
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-    calculateLayout();
-  };
+    return () => {
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  const calculateLayout = () => {
-    if (gridContainerRef.current) {
-      const containerWidth = gridContainerRef.current.offsetWidth;
-      const movieCardWidth = isMobile ? 90 : 200;
-      const horizontalGap = isMobile ? 10 : 15;
-
-      const newRowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
-      setRowSize(newRowSize);
-      updateVisibleMovies(data.results.slice(0, 120), currentPage, newRowSize, moviesPerPage);
-    }
-  };
-
-  const toggleWishlistHandler = (movie) => {
+  const handleToggleWishlist = (movie) => {
     dispatch(toggleWishlist(movie));
   };
 
@@ -97,7 +77,7 @@ function MovieGrid({ fetchUrl }) {
     return wishlist.some((movie) => movie.id === movieId);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="movie-grid">
         <div className="loading-spinner">Loading...</div>
@@ -105,10 +85,10 @@ function MovieGrid({ fetchUrl }) {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="movie-grid">
-        <div className="error-message">Failed to load movies.</div>
+        <div className="error-message">영화를 불러오는 중 오류가 발생했습니다: {error.message}</div>
       </div>
     );
   }
@@ -116,37 +96,21 @@ function MovieGrid({ fetchUrl }) {
   return (
     <div className="movie-grid" ref={gridContainerRef}>
       <div className={`grid-container grid`}>
-        {visibleMovieGroups.map((movieGroup, i) => (
-          <div key={i} className={`movie-row ${movieGroup.length === rowSize ? 'full' : ''}`}>
-            {movieGroup.map((movie) => (
-              <div
-                key={movie.id}
-                className="movie-card"
-                onClick={() => toggleWishlistHandler(movie)}
-              >
-                <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
-                <div className="movie-title">{movie.title}</div>
-                {isInWishlist(movie.id) && (
-                  <div className="wishlist-indicator">👍</div>
-                )}
-              </div>
-            ))}
-          </div>
-        ))}
+        {data.pages.map((page, pageIndex) =>
+          page.map((movie) => (
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onToggleWishlist={handleToggleWishlist}
+              isInWishlist={isInWishlist(movie.id)}
+            />
+          ))
+        )}
       </div>
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button onClick={prevPage} disabled={currentPage === 1}>
-            &lt; 이전
-          </button>
-          <span>
-            {currentPage} / {totalPages}
-          </span>
-          <button onClick={nextPage} disabled={currentPage === totalPages}>
-            다음 &gt;
-          </button>
-        </div>
-      )}
+      <div ref={loadMoreRef} className="load-more">
+        {isFetchingNextPage && <div className="loading-spinner">Loading more...</div>}
+        {!hasNextPage && <div className="end-message">더 이상 영화가 없습니다.</div>}
+      </div>
     </div>
   );
 }
