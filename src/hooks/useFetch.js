@@ -9,7 +9,6 @@ function useFetch(url, params = {}) {
 
   useEffect(() => {
     let cancel;
-    const stringifiedParams = JSON.stringify(params); // 별도의 변수로 추출
     axios
       .get(url, {
         params,
@@ -25,7 +24,7 @@ function useFetch(url, params = {}) {
         setLoading(false);
       });
     return () => cancel();
-  }, [url, params]); // 'params' 추가
+  }, [url, params]); // 'params'를 의존성 배열에 포함
 
   return { data, loading, error };
 }
