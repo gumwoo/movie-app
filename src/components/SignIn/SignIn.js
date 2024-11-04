@@ -172,9 +172,9 @@ function SignIn() {
                   {loading ? 'Logging in...' : 'Login'}
                 </button>
               </form>
-              <a href="#" className="account-check" onClick={toggleCard}>
+              <button type="button" className="account-check" onClick={toggleCard}>
                 Don't have an account? <b>Sign up</b>
-              </a>
+              </button>
             </div>
 
             {/* 회원가입 폼 */}
@@ -243,9 +243,9 @@ function SignIn() {
                   {loading ? 'Registering...' : 'Register'}
                 </button>
               </form>
-              <a href="#" className="account-check" onClick={toggleCard}>
+              <button type="button" className="account-check" onClick={toggleCard}>
                 Already have an account? <b>Sign in</b>
-              </a>
+              </button>
             </div>
           </div>
         </div>

@@ -9,6 +9,7 @@ function useFetch(url, params = {}) {
 
   useEffect(() => {
     let cancel;
+    const stringifiedParams = JSON.stringify(params); // 별도의 변수로 추출
     axios
       .get(url, {
         params,
@@ -24,7 +25,7 @@ function useFetch(url, params = {}) {
         setLoading(false);
       });
     return () => cancel();
-  }, [url, JSON.stringify(params)]);
+  }, [url, params]); // 'params' 추가
 
   return { data, loading, error };
 }

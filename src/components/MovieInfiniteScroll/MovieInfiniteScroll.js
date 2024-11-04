@@ -92,7 +92,7 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
   };
 
   const [movies, setMovies] = useState([]);
-  const [maxScroll, setMaxScroll] = useState(0);
+  // const [maxScroll, setMaxScroll] = useState(0); 제거
 
   const getImageUrl = (path) => {
     return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
@@ -166,10 +166,7 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
     <div className="movie-grid" ref={gridContainerRef}>
       <div className={`grid-container ${currentView}`}>
         {visibleMovieGroups.map((movieGroup, i) => (
-          <div
-            key={i}
-            className={`movie-row ${movieGroup.length === rowSize ? 'full' : ''}`}
-          >
+          <div key={i} className={`movie-row ${movieGroup.length === rowSize ? 'full' : ''}`}>
             {movieGroup.map((movie) => (
               <div
                 key={movie.id}
