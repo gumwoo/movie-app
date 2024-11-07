@@ -16,7 +16,7 @@ function MovieCard({ movie, onToggleWishlist, isInWishlist }) {
         alt={movie.title}
         effect="blur"
         className="movie-poster"
-        placeholderSrc="/placeholder-image.jpg"
+        placeholderSrc="/placeholder-image.jpg" // 대체 이미지 경로
       />
       <div className="movie-title">{movie.title}</div>
       {isInWishlist && <div className="wishlist-indicator">👍</div>}
