@@ -1,32 +1,24 @@
 // src/hooks/useFetch.js
-import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+/**
+ * useFetch 훅 (react-query v5 호환)
+ * @param {string} url - 데이터 패칭을 위한 URL
+ * @param {object} params - API 요청 시 사용할 쿼리 파라미터
+ * @returns {object} - react-query의 useQuery 반환값
+ */
 function useFetch(url, params = {}) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    let cancel;
-    axios
-      .get(url, {
-        params,
-        cancelToken: new axios.CancelToken(c => (cancel = c)),
-      })
-      .then(response => {
-        setData(response.data);
-        setLoading(false);
-      })
-      .catch(err => {
-        if (axios.isCancel(err)) return;
-        setError(err);
-        setLoading(false);
-      });
-    return () => cancel();
-  }, [url, params]); // 'params'를 의존성 배열에 포함
-
-  return { data, loading, error };
+  return useQuery({
+    queryKey: [url, params],
+    queryFn: async () => {
+      const { data } = await axios.get(url, { params });
+      return data;
+    },
+    staleTime: 1000 * 60 * 5, // 5분
+    cacheTime: 1000 * 60 * 30, // 30분
+    keepPreviousData: true,
+  });
 }
 
 export default useFetch;
