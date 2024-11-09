@@ -1,11 +1,11 @@
 // src/views/Search/HomeSearch.js
+
 import React, { useState } from 'react';
 import MovieSearch from '../../components/MovieSearch/MovieSearch';
 import MovieInfiniteScroll from '../../components/MovieInfiniteScroll/MovieInfiniteScroll';
 import './HomeSearch.css';
 
 function HomeSearch() {
-  const apiKey = localStorage.getItem('TMDb-Key') || '';
   const [genreId, setGenreId] = useState('28');
   const [ageId, setAgeId] = useState(-1);
   const [sortId, setSortId] = useState('all');
@@ -49,7 +49,6 @@ function HomeSearch() {
       </div>
       <div className="content-search">
         <MovieInfiniteScroll
-          apiKey={apiKey}
           genreCode={genreId}
           sortingOrder={sortId}
           voteEverage={ageId}
