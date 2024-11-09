@@ -12,9 +12,7 @@ function Header() {
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const removeKey = () => {
@@ -57,6 +55,10 @@ function Header() {
           </nav>
         </div>
         <div className="header-right">
+          {/* '검색' 링크 추가 */}
+          <Link to="/search" className="search-link">
+            검색
+          </Link>
           <button className="icon-button" onClick={removeKey}>
             <FontAwesomeIcon icon={faUser} />
           </button>

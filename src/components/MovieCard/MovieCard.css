@@ -1,4 +1,5 @@
 /* src/components/MovieCard/MovieCard.css */
+
 .movie-card {
     position: relative;
     width: 200px;
@@ -30,5 +31,39 @@
     background-color: rgba(255, 255, 255, 0.7);
     border-radius: 50%;
     padding: 5px;
+  }
+  
+  .wishlist-button {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #E50914;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.8;
+    transition: opacity 0.3s;
+  }
+  
+  .wishlist-button:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .movie-card {
+      width: 120px;
+    }
+  
+    .movie-title {
+      font-size: 14px;
+    }
+  
+    .wishlist-button {
+      padding: 3px 6px;
+      font-size: 12px;
+    }
   }
   
