@@ -1,4 +1,5 @@
 // src/services/URLService.js
+
 import axios from 'axios';
 
 class URLService {
@@ -23,18 +24,16 @@ class URLService {
     return path ? `${this.imageBaseURL}${this.backdropSize}${path}` : '';
   }
 
-  // 인기 영화 목록 조회 URL 생성 메서드 추가
-  getURL4PopularMovies(page = 1) {
-    return `${this.baseURL}/movie/popular?api_key=${this.apiKey}&language=${this.language}&page=${page}`;
-  }
+  // **여기에 누락된 메서드 추가**
+  // 인기 영화 목록 조회 URL 반환 메서드
+  getURL4PopularMovies = () => {
+    return `${this.baseURL}/movie/popular?api_key=${this.apiKey}&language=${this.language}`;
+  };
 
-  getURL4ReleaseMovies(page = 2) {
-    return `${this.baseURL}/movie/now_playing?api_key=${this.apiKey}&language=${this.language}&page=${page}`;
-  }
-
-  getURL4GenreMovies(genre, page = 1) {
-    return `${this.baseURL}/discover/movie?api_key=${this.apiKey}&with_genres=${genre}&language=${this.language}&page=${page}`;
-  }
+  // 최신 영화 목록 조회 URL 반환 메서드
+  getURL4ReleaseMovies = () => {
+    return `${this.baseURL}/movie/now_playing?api_key=${this.apiKey}&language=${this.language}`;
+  };
 
   // 인기 영화 목록 조회 함수 (react-query용)
   fetchPopularMovies = async (page = 1) => {
@@ -74,8 +73,8 @@ class URLService {
     return response.data;
   };
 
-  // 영화 검색 기능 함수
-  searchMovies = async (query, page = 1) => {
+  // 검색 및 장르 필터링 영화 목록 조회 함수
+  searchMovies = async (query, page = 1, genre = '0') => {
     const response = await axios.get(`${this.baseURL}/search/movie`, {
       params: {
         api_key: this.apiKey,
@@ -86,21 +85,17 @@ class URLService {
       },
       headers: this.headers,
     });
-    return response.data.results;
-  };
 
-  // 장르별 영화 필터링 함수
-  fetchMoviesByGenre = async (genreId, page = 1) => {
-    const response = await axios.get(`${this.baseURL}/discover/movie`, {
-      params: {
-        api_key: this.apiKey,
-        language: this.language,
-        with_genres: genreId,
-        page,
-      },
-      headers: this.headers,
-    });
-    return response.data.results;
+    let results = response.data.results;
+    if (genre !== '0') {
+      results = results.filter(movie => movie.genre_ids.includes(parseInt(genre)));
+    }
+
+    return {
+      results,
+      total_pages: response.data.total_pages,
+      current_page: response.data.page,
+    };
   };
 
   // 장르 목록 조회 함수

@@ -1,4 +1,5 @@
 // src/views/Home/HomeMain/HomeMain.js
+
 import React from 'react';
 import Banner from '../../../components/Banner/Banner';
 import MovieRow from '../../../components/MovieRow/MovieRow';
