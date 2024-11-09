@@ -1,22 +1,22 @@
 
 .app-header {
-    height: 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 4%;
-    background-color: transparent;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    transition: background-color 0.3s ease;
-  }
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 4%;
+  background-color: var(--header-background);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
   
   .app-header:hover,
   .app-header.scrolled {
-    background-color: #141414;
+    background-color: var(--header-background);
   }
   
   .header-left,
@@ -44,14 +44,15 @@
   }
   
   .nav-links a {
-    color: #e5e5e5;
+    color: var(--header-text-color);
     text-decoration: none;
     font-size: 0.85rem;
     transition: color 0.3s ease;
   }
   
   .nav-links a:hover {
-    color: #b3b3b3;
+    color: var(--header-text-color);
+    opacity: 0.7;
   }
   
   .icon-button {

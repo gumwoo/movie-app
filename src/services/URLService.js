@@ -140,6 +140,25 @@ class URLService {
     });
     return response.data.genres;
   };
+  async searchMovies(query, page = 1, genre = '0') {
+    const params = {
+      api_key: this.apiKey,
+      language: this.language,
+      query,
+      page,
+      include_adult: false,
+    };
+
+    if (genre !== '0') {
+      params.with_genres = genre;
+    }
+
+    const response = await axios.get(`${this.baseURL}/search/movie`, {
+      params,
+      headers: this.headers,
+    });
+    return response.data;
+  }
 }
 
 export default URLService;
