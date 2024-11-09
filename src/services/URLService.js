@@ -61,6 +61,37 @@ class URLService {
     return response.data.results;
   };
 
+   // 필터 기반 영화 목록 조회 함수
+   fetchMoviesByFilters = async ({ page = 1, genreCode, sortingOrder, voteEverage }) => {
+    const params = {
+      api_key: this.apiKey,
+      language: this.language,
+      page,
+      include_adult: false,
+    };
+
+    if (genreCode && genreCode !== '0') {
+      params.with_genres = genreCode;
+    }
+
+    if (sortingOrder && sortingOrder !== 'all') {
+      params.with_original_language = sortingOrder;
+    }
+
+    if (voteEverage !== -1 && voteEverage !== -2) {
+      params['vote_average.gte'] = voteEverage;
+      params['vote_average.lte'] = voteEverage + 1;
+    } else if (voteEverage === -2) {
+      params['vote_average.lte'] = 4;
+    }
+
+    const response = await axios.get(`${this.baseURL}/discover/movie`, {
+      params,
+      headers: this.headers,
+    });
+    return response.data;
+  };
+
   // 영화 상세 정보 조회 함수
   fetchMovieDetails = async (movieId) => {
     const response = await axios.get(`${this.baseURL}/movie/${movieId}`, {

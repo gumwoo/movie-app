@@ -1,102 +1,79 @@
 // src/components/MovieInfiniteScroll/MovieInfiniteScroll.js
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleWishlist } from '../../store/slices/wishlistSlice';
-import useFetch from '../../hooks/useFetch';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import URLService from '../../services/URLService';
 import './MovieInfiniteScroll.css';
 
-function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
-  const { data, loading, error } = useFetch(getFetchUrl());
-  const [currentPage, setCurrentPage] = useState(1);
+function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
+  const urlService = new URLService();
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.wishlist);
+  const gridContainerRef = useRef(null);
+  const loadMoreRef = useRef(null);
+
+  const {
+    data,
+    isLoading: loading,
+    isError: error,
+    error: fetchError,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['movies', genreCode, sortingOrder, voteEverage],
+    queryFn: ({ pageParam = 1 }) => {
+      return urlService.fetchMoviesByFilters({
+        page: pageParam,
+        genreCode,
+        sortingOrder,
+        voteEverage,
+      });
+    },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page >= lastPage.total_pages) return undefined;
+      return lastPage.page + 1;
+    },
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 30,
+  });
+
   const [rowSize, setRowSize] = useState(4);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [currentView] = useState('grid');
-  const [hasMore, setHasMore] = useState(true);
   const [showTopButton, setShowTopButton] = useState(false);
 
-  const gridContainerRef = useRef(null);
-  const loadingTriggerRef = useRef(null);
-
-  const dispatch = useDispatch();
-  const wishlist = useSelector((state) => state.wishlist.wishlist);
-
   useEffect(() => {
-    setupIntersectionObserver();
-    if (data && data.results) {
-      filterAndSetMovies(data.results);
-    }
     handleResize();
     window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('scroll', handleScroll);
-      if (observer.current) {
-        observer.current.disconnect();
-      }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
+  }, []);
 
-  const observer = useRef(null);
+  useEffect(() => {
+    if (loadMoreRef.current && hasNextPage && !isFetchingNextPage) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            fetchNextPage();
+          }
+        },
+        { rootMargin: '100px' }
+      );
+      observer.observe(loadMoreRef.current);
 
-  function getFetchUrl() {
-    return genreCode === '0'
-      ? 'https://api.themoviedb.org/3/movie/popular'
-      : 'https://api.themoviedb.org/3/discover/movie';
-  }
-
-  const setupIntersectionObserver = () => {
-    observer.current = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !loading && hasMore) {
-          fetchMoreMovies();
+      return () => {
+        if (loadMoreRef.current) {
+          observer.unobserve(loadMoreRef.current);
         }
-      },
-      { rootMargin: '100px', threshold: 0.1 }
-    );
-
-    if (loadingTriggerRef.current) {
-      observer.current.observe(loadingTriggerRef.current);
+      };
     }
-  };
-
-  const filterAndSetMovies = (fetchedMovies) => {
-    let filteredMovies = fetchedMovies;
-
-    if (sortingOrder !== 'all') {
-      filteredMovies = filteredMovies.filter(
-        (movie) => movie.original_language === sortingOrder
-      );
-    }
-
-    if (voteEverage !== -1 && voteEverage !== -2) {
-      filteredMovies = filteredMovies.filter((movie) => 
-        movie.vote_average >= voteEverage && movie.vote_average < voteEverage + 1
-      );
-    } else if (voteEverage === -2) {
-      filteredMovies = filteredMovies.filter((movie) => movie.vote_average <= 4);
-    }
-
-    setMovies((prevMovies) => [...prevMovies, ...filteredMovies]);
-    if (filteredMovies.length === 0) {
-      setHasMore(false);
-    }
-  };
-
-  const fetchMoreMovies = () => {
-    if (loading || !hasMore) return;
-    setCurrentPage((prevPage) => prevPage + 1);
-    // `useFetch`는 이미 다음 페이지 데이터를 가져오므로 추가 fetch는 필요 없습니다.
-    // 다만, `useFetch`의 구현이 페이지를 인식하도록 설정되어 있어야 합니다.
-  };
-
-  const [movies, setMovies] = useState([]);
-  // const [maxScroll, setMaxScroll] = useState(0); 제거
-
-  const getImageUrl = (path) => {
-    return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
-  };
+  }, [loadMoreRef.current, hasNextPage, isFetchingNextPage]);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -119,14 +96,7 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
       top: 0,
       behavior: 'smooth',
     });
-    resetMovies();
-  };
-
-  const resetMovies = () => {
-    setMovies([]);
-    setCurrentPage(1);
-    setHasMore(true);
-    // `useFetch`의 페이지 상태를 초기화하려면 추가적인 설정이 필요할 수 있습니다.
+    // 필요한 경우 영화 목록을 리셋할 수 있습니다.
   };
 
   const toggleWishlistHandler = (movie) => {
@@ -137,16 +107,7 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
     return wishlist.some((movie) => movie.id === movieId);
   };
 
-  const visibleMovieGroups = movies.reduce((resultArray, item, index) => {
-    const groupIndex = Math.floor(index / rowSize);
-    if (!resultArray[groupIndex]) {
-      resultArray[groupIndex] = [];
-    }
-    resultArray[groupIndex].push(item);
-    return resultArray;
-  }, []);
-
-  if (loading && currentPage === 1) {
+  if (loading) {
     return (
       <div className="movie-grid">
         <div className="loading-spinner">Loading...</div>
@@ -157,10 +118,25 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
   if (error) {
     return (
       <div className="movie-grid">
-        <div className="error-message">Failed to load movies.</div>
+        <div className="error-message">Failed to load movies: {fetchError.message}</div>
       </div>
     );
   }
+
+  const movies = data.pages.flatMap((page) => page.results);
+
+  const visibleMovieGroups = movies.reduce((resultArray, item, index) => {
+    const groupIndex = Math.floor(index / rowSize);
+    if (!resultArray[groupIndex]) {
+      resultArray[groupIndex] = [];
+    }
+    resultArray[groupIndex].push(item);
+    return resultArray;
+  }, []);
+
+  const getImageUrl = (path) => {
+    return path ? `https://image.tmdb.org/t/p/w300${path}` : '/placeholder-image.jpg';
+  };
 
   return (
     <div className="movie-grid" ref={gridContainerRef}>
@@ -183,8 +159,8 @@ function MovieInfiniteScroll({ apiKey, genreCode, sortingOrder, voteEverage }) {
           </div>
         ))}
       </div>
-      <div ref={loadingTriggerRef} className="loading-trigger">
-        {loading && hasMore && (
+      <div ref={loadMoreRef} className="loading-trigger">
+        {isFetchingNextPage && (
           <div className="loading-indicator">
             <div className="spinner"></div>
             <span>Loading...</span>
