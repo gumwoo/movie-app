@@ -62,8 +62,8 @@ function MovieGrid({ fetchUrl }) {
     }
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+      if (currentLoadMoreRef) {
+        observer.unobserve(currentLoadMoreRef);
       }
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
