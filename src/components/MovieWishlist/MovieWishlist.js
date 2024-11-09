@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleWishlist } from '../../store/slices/wishlistSlice';
 import './MovieWishlist.css';
-import URLService from '../../services/URLService';
 
 function MovieWishlist() {
   const dispatch = useDispatch();

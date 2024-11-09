@@ -1,6 +1,6 @@
 // src/components/MovieInfiniteScroll/MovieInfiniteScroll.js
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleWishlist } from '../../store/slices/wishlistSlice';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -14,6 +14,12 @@ function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
   const gridContainerRef = useRef(null);
   const loadMoreRef = useRef(null);
 
+  const [rowSize, setRowSize] = useState(4);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [currentView] = useState('grid');
+  const [showTopButton, setShowTopButton] = useState(false);
+
+  // **1. Declare useInfiniteQuery hook before useEffect hooks**
   const {
     data,
     isLoading: loading,
@@ -40,42 +46,8 @@ function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
     cacheTime: 1000 * 60 * 30,
   });
 
-  const [rowSize, setRowSize] = useState(4);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const [currentView] = useState('grid');
-  const [showTopButton, setShowTopButton] = useState(false);
-
-  useEffect(() => {
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (loadMoreRef.current && hasNextPage && !isFetchingNextPage) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            fetchNextPage();
-          }
-        },
-        { rootMargin: '100px' }
-      );
-      observer.observe(loadMoreRef.current);
-
-      return () => {
-        if (loadMoreRef.current) {
-          observer.unobserve(loadMoreRef.current);
-        }
-      };
-    }
-  }, [loadMoreRef.current, hasNextPage, isFetchingNextPage]);
-
-  const handleResize = () => {
+  // **2. Declare handleResize and handleScroll functions before useEffect hooks**
+  const handleResize = useCallback(() => {
     setIsMobile(window.innerWidth <= 768);
     if (gridContainerRef.current) {
       const containerWidth = gridContainerRef.current.offsetWidth;
@@ -84,19 +56,54 @@ function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
       const newRowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
       setRowSize(newRowSize);
     }
-  };
+  }, [isMobile]);
 
   const handleScroll = () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     setShowTopButton(scrollTop > 300);
   };
 
+  // **3. useEffect hooks**
+  useEffect(() => {
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleResize]);
+
+  useEffect(() => {
+    const currentLoadMoreRef = loadMoreRef.current;
+
+    if (currentLoadMoreRef && hasNextPage && !isFetchingNextPage) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            fetchNextPage();
+          }
+        },
+        { rootMargin: '100px' }
+      );
+      observer.observe(currentLoadMoreRef);
+
+      return () => {
+        if (currentLoadMoreRef) {
+          observer.unobserve(currentLoadMoreRef);
+        }
+      };
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  // Rest of your code remains unchanged
+
   const scrollToTopAndReset = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth',
     });
-    // 필요한 경우 영화 목록을 리셋할 수 있습니다.
+    // If needed, reset movie list here
   };
 
   const toggleWishlistHandler = (movie) => {
