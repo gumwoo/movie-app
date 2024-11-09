@@ -1,77 +1,140 @@
+/* src/components/MovieSearch/MovieSearch.css */
+
+.movie-search-container {
+  position: relative;
+  padding: 20px;
+  width: 100%;
+}
+
+.movie-search-container form {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.movie-search-container input[type="text"] {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 16px;
+  color: var(--text-color);
+  background-color: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+  width: 100%; 
+}
+
+.movie-search-container button[type="submit"] {
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
+  border: none;
+  border-radius: 0 4px 4px 0;
+  cursor: pointer;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--background-color);
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.suggestions li {
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.suggestions li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .dropdown-container {
-    margin-top: 0;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.custom-select {
+  min-width: 120px;
+  position: relative;
+  display: inline-block;
+}
+
+.select-selected {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 10px;
+  border: 1px solid #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.container-search-bar {
+  width: 100%;
+  max-width: 800px; /* 필요에 따라 조정 */
+  margin: 0 auto;   /* 중앙 정렬 */
+}
+.select-items {
+  display: block;
+  position: absolute;
+  background-color: var(--background-color);
+  border: 1px solid #fff;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.select-items div {
+  color: var(--text-color);
+  padding: 10px;
+  cursor: pointer;
+}
+
+.select-items div:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.clear-options {
+  min-width: 120px;
+  background-color: var(--button-background);
+  color: var(--button-text-color);
+  padding: 10px;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 4px;
+}
+
+.clear-options:hover {
+  background-color: rgba(229, 9, 20, 0.8);
+}
+
+@media (max-width: 768px) {
+  .movie-search-container input[type="text"] {
+    font-size: 14px;
+    padding: 6px 10px;
   }
-  
-  .custom-select {
-    min-width: 120px;
-    position: relative;
-    display: inline-block;
+
+  .movie-search-container button[type="submit"] {
+    font-size: 14px;
+    padding: 6px 10px;
   }
-  
+
   .select-selected {
-    background-color: black;
-    color: white;
-    padding: 10px;
-    border: 1px solid #fff;
-    font-size: 16px;
-    cursor: pointer;
+    font-size: 14px;
   }
-  
-  .select-items {
-    display: block;
-    position: absolute;
-    background-color: #333;
-    border: 1px solid #fff;
-    z-index: 99;
-    top: 100%;
-    left: 0;
-    right: 0;
-  }
-  
-  .select-items div {
-    color: white;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .select-items div:hover {
-    background-color: #575757;
-  }
-  
-  .select-arrow-active:after {
-    content: "\25B2";
-    position: absolute;
-    right: 10px;
-    top: 14px;
-  }
-  
-  .select-selected:after {
-    content: "\25BC";
-    position: absolute;
-    right: 10px;
-    top: 14px;
-  }
-  
-  .select-selected.select-arrow-active:after {
-    content: "\25B2";
-  }
-  
+
   .clear-options {
-    min-width: 120px;
-    background-color: black;
-    color: white;
-    padding: 10px;
-    border: 1px solid #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    border-radius: 0 !important;
+    font-size: 14px;
   }
-  
-  .clear-options:hover {
-    background-color: #333;
-  }
-  
+}

@@ -1,4 +1,5 @@
 // src/views/SearchResults/SearchResults.js
+
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -33,14 +34,13 @@ function SearchResults() {
   } = useInfiniteQuery({
     queryKey: ['searchMovies', query, genre],
     queryFn: ({ pageParam = 1 }) => urlService.searchMovies(query, pageParam, genre),
-    getNextPageParam: (lastPage, pages) => {
-      if (lastPage.results.length === 0) return undefined;
-      if (lastPage.current_page >= lastPage.total_pages) return undefined;
-      return lastPage.current_page + 1;
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page >= lastPage.total_pages) return undefined;
+      return lastPage.page + 1;
     },
-    enabled: query.trim() !== '', // 검색어가 있을 때만 실행
-    staleTime: 1000 * 60 * 5, // 5분
-    cacheTime: 1000 * 60 * 30, // 30분
+    enabled: query.trim() !== '',
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 30,
   });
 
   // 무한 스크롤을 위한 Intersection Observer 설정

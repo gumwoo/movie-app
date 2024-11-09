@@ -1,4 +1,5 @@
 // src/App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SignIn from './components/SignIn/SignIn';
@@ -36,15 +37,22 @@ function App() {
           {/* 찜한 리스트 페이지 */}
           <Route path="wishlist" element={<HomeWishlist />} />
 
-          {/* 검색 관련 라우트 */}
-          <Route path="search" element={<HomeSearch />}>
-            {/* 검색 결과 페이지 */}
-            <Route path="results" element={<SearchResults />} />
-          </Route>
+          {/* 검색 페이지 */}
+          <Route path="search" element={<HomeSearch />} />
 
           {/* 영화 상세 정보 페이지 */}
           <Route path="movie/:movieId" element={<MovieDetails />} />
         </Route>
+
+        {/* 검색 결과 페이지 */}
+        <Route
+          path="/search/results"
+          element={
+            <ProtectedRoute>
+              <SearchResults />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
