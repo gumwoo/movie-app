@@ -47,6 +47,7 @@ function MovieGrid({ fetchUrl }) {
 
   // 무한 스크롤을 위한 Intersection Observer 설정
   useEffect(() => {
+    const currentLoadMoreRef = loadMoreRef.current;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -56,8 +57,8 @@ function MovieGrid({ fetchUrl }) {
       { rootMargin: '100px' }
     );
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+    if (currentLoadMoreRef) {
+      observer.observe(currentLoadMoreRef);
     }
 
     return () => {

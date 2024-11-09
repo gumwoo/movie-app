@@ -15,18 +15,18 @@
 
 .movie-search-container input[type="text"] {
   flex: 1;
-  padding: 8px 12px;
+  padding: 12px;
   font-size: 16px;
   color: var(--text-color);
-  background-color: transparent;
+  background-color: var(--background-color);
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
   outline: none;
-  width: 100%; 
+  direction: ltr;
 }
 
 .movie-search-container button[type="submit"] {
-  padding: 8px 12px;
+  padding: 12px 16px;
   font-size: 16px;
   background-color: var(--button-background);
   color: var(--button-text-color);

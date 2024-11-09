@@ -1,5 +1,3 @@
-// src/services/URLService.js
-
 import axios from 'axios';
 
 class URLService {
@@ -24,7 +22,6 @@ class URLService {
     return path ? `${this.imageBaseURL}${this.backdropSize}${path}` : '';
   }
 
-  // **여기에 누락된 메서드 추가**
   // 인기 영화 목록 조회 URL 반환 메서드
   getURL4PopularMovies = () => {
     return `${this.baseURL}/movie/popular?api_key=${this.apiKey}&language=${this.language}`;
@@ -61,8 +58,8 @@ class URLService {
     return response.data.results;
   };
 
-   // 필터 기반 영화 목록 조회 함수
-   fetchMoviesByFilters = async ({ page = 1, genreCode, sortingOrder, voteEverage }) => {
+  // 필터 기반 영화 목록 조회 함수
+  fetchMoviesByFilters = async ({ page = 1, genreCode, sortingOrder, voteEverage }) => {
     const params = {
       api_key: this.apiKey,
       language: this.language,
@@ -106,41 +103,6 @@ class URLService {
 
   // 검색 및 장르 필터링 영화 목록 조회 함수
   searchMovies = async (query, page = 1, genre = '0') => {
-    const response = await axios.get(`${this.baseURL}/search/movie`, {
-      params: {
-        api_key: this.apiKey,
-        language: this.language,
-        query,
-        page,
-        include_adult: false, // 성인 콘텐츠 제외
-      },
-      headers: this.headers,
-    });
-
-    let results = response.data.results;
-    if (genre !== '0') {
-      results = results.filter(movie => movie.genre_ids.includes(parseInt(genre)));
-    }
-
-    return {
-      results,
-      total_pages: response.data.total_pages,
-      current_page: response.data.page,
-    };
-  };
-
-  // 장르 목록 조회 함수
-  fetchGenres = async () => {
-    const response = await axios.get(`${this.baseURL}/genre/movie/list`, {
-      params: {
-        api_key: this.apiKey,
-        language: this.language,
-      },
-      headers: this.headers,
-    });
-    return response.data.genres;
-  };
-  async searchMovies(query, page = 1, genre = '0') {
     const params = {
       api_key: this.apiKey,
       language: this.language,
@@ -158,7 +120,19 @@ class URLService {
       headers: this.headers,
     });
     return response.data;
-  }
+  };
+
+  // 장르 목록 조회 함수
+  fetchGenres = async () => {
+    const response = await axios.get(`${this.baseURL}/genre/movie/list`, {
+      params: {
+        api_key: this.apiKey,
+        language: this.language,
+      },
+      headers: this.headers,
+    });
+    return response.data.genres;
+  };
 }
 
 export default URLService;

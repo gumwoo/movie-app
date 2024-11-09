@@ -47,6 +47,8 @@ function SearchResults() {
   useEffect(() => {
     if (!hasNextPage) return;
 
+    const currentLoadMoreRef = loadMoreRef.current;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -56,13 +58,13 @@ function SearchResults() {
       { rootMargin: '100px' }
     );
 
-    if (loadMoreRef.current) {
-      observer.observe(loadMoreRef.current);
+    if (currentLoadMoreRef) {
+      observer.observe(currentLoadMoreRef);
     }
 
     return () => {
-      if (loadMoreRef.current) {
-        observer.unobserve(loadMoreRef.current);
+      if (currentLoadMoreRef) {
+        observer.unobserve(currentLoadMoreRef);
       }
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
