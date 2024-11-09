@@ -1,6 +1,7 @@
 /* src/components/SearchBar/SearchBar.css */
 
 .search-bar {
+    position: relative; /* 추가: 자동 완성 목록의 위치를 검색 바에 상대적으로 설정하기 위해 */
     display: flex;
     align-items: center;
   }
@@ -11,6 +12,7 @@
     border-radius: 4px 0 0 4px;
     outline: none;
     font-size: 16px;
+    width: 100%; /* 추가: 입력 필드의 너비를 부모 요소에 맞게 설정 */
   }
   
   .search-bar button {
@@ -26,6 +28,29 @@
   
   .search-bar button:hover {
     background-color: #f40612;
+  }
+  
+  /* 자동 완성 목록 스타일 추가 */
+  .suggestions {
+    position: absolute;
+    top: 100%; /* 검색 바 바로 아래에 위치하도록 설정 */
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none; /* 검색 바와의 경계선을 자연스럽게 연결 */
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+  
+  .suggestions li:hover {
+    background-color: #f0f0f0;
   }
   
   @media (max-width: 768px) {

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faTicketAlt, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import ThemeToggle from '../ThemeToggle/ThemeToggle'; // ThemeToggle 컴포넌트 임포트
 import './Header.css';
 
 function Header() {
@@ -55,6 +56,8 @@ function Header() {
           </nav>
         </div>
         <div className="header-right">
+          {/* 테마 토글 버튼 추가 */}
+          <ThemeToggle />
           {/* '검색' 링크 추가 */}
           <Link to="/search" className="search-link">
             검색
