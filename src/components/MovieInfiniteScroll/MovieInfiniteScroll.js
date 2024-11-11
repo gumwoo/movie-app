@@ -153,11 +153,13 @@ function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
             {movieGroup.map((movie) => (
               <div
                 key={movie.id}
-                className="movie-card"
+                className="infinite-scroll-movie-card" // 클래스 이름 변경
                 onClick={() => toggleWishlistHandler(movie)}
               >
-                <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
-                <div className="movie-title">{movie.title}</div>
+                <img src={getImageUrl(movie.poster_path)}
+                alt={movie.title}
+                className="infinite-scroll-movie-poster"/>
+                <div className="infinite-scroll-movie-title">{movie.title}</div>
                 {isInWishlist(movie.id) && (
                   <div className="wishlist-indicator">👍</div>
                 )}

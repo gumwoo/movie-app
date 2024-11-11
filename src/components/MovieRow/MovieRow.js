@@ -169,7 +169,7 @@ function MovieRow({ title, fetchUrl }) {
             {movies.map((movie) => (
               <div
                 key={movie.id}
-                className="movie-card"
+                className="row-movie-card"
                 onClick={() => toggleWishlistHandler(movie)}
               >
                 <img

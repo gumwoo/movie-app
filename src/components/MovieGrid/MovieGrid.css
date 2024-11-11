@@ -11,8 +11,8 @@
 
 .grid-container {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  flex-wrap: wrap; /* 아이템이 줄 바꿈되도록 설정 */
+  justify-content: center; /* 가운데 정렬 */
 }
 
 .movie-row {
@@ -26,46 +26,19 @@
   flex-direction: column;
 }
 
-.grid-container.list .movie-card {
+.grid-container.list .custom-movie-card {
   width: 100%;
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
 
-.movie-card {
-  width: 200px;
-  margin: 0 10px;
-  transition: transform 0.3s;
-  position: relative;
-}
-
-.movie-card:hover {
-  transform: scale(1.05);
-}
-
-.movie-card img {
-  width: 80%;
-  aspect-ratio: 1 / 1;
-  border-radius: 4px;
-  object-fit: cover;
-}
-
-.grid-container.list .movie-card img {
+.grid-container.list .custom-movie-card img {
   width: 100px;
   margin-right: 20px;
 }
 
-.movie-title {
-  margin-top: 5px;
-  text-align: center;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.grid-container.list .movie-title {
+.grid-container.list .custom-movie-title {
   text-align: left;
   white-space: normal;
 }
@@ -95,19 +68,6 @@
 @media (max-width: 768px) {
   .movie-grid {
     height: calc(90svh - 200px);
-  }
-
-  .movie-card {
-    width: 90px;
-    margin: 0 5px;
-  }
-
-  .movie-title {
-    font-size: 12px;
-  }
-
-  .grid-container.list .movie-card img {
-    width: 60px;
   }
 
   .pagination button {
