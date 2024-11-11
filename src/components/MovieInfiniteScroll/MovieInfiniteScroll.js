@@ -51,8 +51,8 @@ function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
     setIsMobile(window.innerWidth <= 768);
     if (gridContainerRef.current) {
       const containerWidth = gridContainerRef.current.offsetWidth;
-      const movieCardWidth = isMobile ? 100 : 300;
-      const horizontalGap = isMobile ? 10 : 15;
+      const movieCardWidth = isMobile ? 120 : 200;
+      const horizontalGap = isMobile ? 10 : 20;
       const newRowSize = Math.floor(containerWidth / (movieCardWidth + horizontalGap));
       setRowSize(newRowSize);
     }

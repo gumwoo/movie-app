@@ -35,6 +35,7 @@
 
 .grid-container.list .custom-movie-card img {
   width: 100px;
+  height: auto;
   margin-right: 20px;
 }
 
