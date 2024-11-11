@@ -8,10 +8,12 @@
     transition: transform 0.3s;
     overflow: hidden;
     border-radius: 8px;
+    transition: transform 0.3s, box-shadow 0.3s;
   }
   
   .custom-movie-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.05) translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
   
   .custom-movie-poster {
