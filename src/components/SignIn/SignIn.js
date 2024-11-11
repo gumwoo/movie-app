@@ -1,5 +1,5 @@
 // src/components/SignIn/SignIn.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { toast, ToastContainer } from 'react-toastify';
@@ -7,11 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './SignIn.css';
 
 function SignIn() {
-  const {
-    handleLogin,
-    handleRegister,
-    loading,
-  } = useAuth();
+  const { handleLogin, handleRegister, loading } = useAuth();
   const navigate = useNavigate();
 
   const [isLoginVisible, setIsLoginVisible] = useState(true);
@@ -31,6 +27,8 @@ function SignIn() {
   const [isRegisterPasswordFocused, setIsRegisterPasswordFocused] = useState(false);
   const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
+  const formWrapperRef = useRef(null);
+
   const isLoginFormValid = email && password;
   const isRegisterFormValid =
     registerEmail &&
@@ -41,10 +39,6 @@ function SignIn() {
 
   const toggleCard = () => {
     setIsLoginVisible(!isLoginVisible);
-    setTimeout(() => {
-      document.getElementById('register')?.classList.toggle('register-swap');
-      document.getElementById('login')?.classList.toggle('login-swap');
-    }, 50);
   };
 
   const focusInput = (inputName) => {
@@ -123,139 +117,153 @@ function SignIn() {
       <div className="container">
         <div id="phone">
           <div id="content-wrapper">
-            {/* 로그인 폼 */}
-            <div className={`card ${!isLoginVisible ? 'hidden' : ''}`} id="login">
-              <form onSubmit={handleLoginSubmit}>
-                <h1>Sign in</h1>
-                <div className={`input ${isEmailFocused || email ? 'active' : ''}`}>
-                  <input
-                    id="email"
-                    type="email"
-                    value={email}
-                    name="email"
-                    onFocus={() => focusInput('email')}
-                    onBlur={() => blurInput('email')}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="email">Username or Email</label>
-                </div>
-                <div className={`input ${isPasswordFocused || password ? 'active' : ''}`}>
-                  <input
-                    id="password"
-                    type="password"
-                    value={password}
-                    name="password"
-                    onFocus={() => focusInput('password')}
-                    onBlur={() => blurInput('password')}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="password">Password</label>
-                </div>
-                <span className="checkbox remember">
-                  <input
-                    type="checkbox"
-                    id="remember"
-                    checked={rememberMe}
-                    name="rememberMe"
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  <label htmlFor="remember" className="read-text">
-                    Remember me
-                  </label>
-                </span>
-                <span className="checkbox forgot">
-                  <button
-                    type="button"
-                    className="forgot-password-button"
-                    onClick={() => {
-                      // Implement forgot password functionality or navigate to the appropriate route
-                      toast.info('Forgot Password functionality is not implemented yet.');
-                    }}
-                  >
-                    Forgot Password?
+            {/* 폼 컨테이너 */}
+            <div className="form-container">
+              <div
+                className={`form-wrapper ${!isLoginVisible ? 'show-signup' : ''}`}
+                ref={formWrapperRef}
+              >
+                {/* 로그인 폼 */}
+                <div className="form" id="login">
+                  <form onSubmit={handleLoginSubmit}>
+                    <h1>Sign in</h1>
+                    <div className={`input ${isEmailFocused || email ? 'active' : ''}`}>
+                      <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        name="email"
+                        onFocus={() => focusInput('email')}
+                        onBlur={() => blurInput('email')}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                      />
+                      <label htmlFor="email">Username or Email</label>
+                    </div>
+                    <div className={`input ${isPasswordFocused || password ? 'active' : ''}`}>
+                      <input
+                        id="password"
+                        type="password"
+                        value={password}
+                        name="password"
+                        onFocus={() => focusInput('password')}
+                        onBlur={() => blurInput('password')}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                      />
+                      <label htmlFor="password">Password</label>
+                    </div>
+                    <span className="checkbox remember">
+                      <input
+                        type="checkbox"
+                        id="remember"
+                        checked={rememberMe}
+                        name="rememberMe"
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                      <label htmlFor="remember" className="read-text">
+                        Remember me
+                      </label>
+                    </span>
+                    <span className="checkbox forgot">
+                      <button
+                        type="button"
+                        className="forgot-password-button"
+                        onClick={() => {
+                          toast.info('Forgot Password 기능은 아직 구현되지 않았습니다.');
+                        }}
+                      >
+                        Forgot Password?
+                      </button>
+                    </span>
+                    <button type="submit" disabled={!isLoginFormValid || loading}>
+                      {loading ? 'Logging in...' : 'Login'}
+                    </button>
+                  </form>
+                  <button type="button" className="account-check" onClick={toggleCard}>
+                    Don't have an account? <b>Sign up</b>
                   </button>
-                </span>
-                <button type="submit" disabled={!isLoginFormValid || loading}>
-                  {loading ? 'Logging in...' : 'Login'}
-                </button>
-              </form>
-              <button type="button" className="account-check" onClick={toggleCard}>
-                Don't have an account? <b>Sign up</b>
-              </button>
-            </div>
+                </div>
 
-            {/* 회원가입 폼 */}
-            <div className={`card ${isLoginVisible ? 'hidden' : ''}`} id="register">
-              <form onSubmit={handleRegisterSubmit}>
-                <h1>Sign up</h1>
-                <div className={`input ${isRegisterEmailFocused || registerEmail ? 'active' : ''}`}>
-                  <input
-                    id="register-email"
-                    type="email"
-                    value={registerEmail}
-                    name="registerEmail"
-                    onFocus={() => focusInput('registerEmail')}
-                    onBlur={() => blurInput('registerEmail')}
-                    onChange={(e) => setRegisterEmail(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="register-email">Email</label>
+                {/* 회원가입 폼 */}
+                <div className="form" id="register">
+                  <form onSubmit={handleRegisterSubmit}>
+                    <h1>Sign up</h1>
+                    <div
+                      className={`input ${
+                        isRegisterEmailFocused || registerEmail ? 'active' : ''
+                      }`}
+                    >
+                      <input
+                        id="register-email"
+                        type="email"
+                        value={registerEmail}
+                        name="registerEmail"
+                        onFocus={() => focusInput('registerEmail')}
+                        onBlur={() => blurInput('registerEmail')}
+                        onChange={(e) => setRegisterEmail(e.target.value)}
+                        required
+                      />
+                      <label htmlFor="register-email">Email</label>
+                    </div>
+                    <div
+                      className={`input ${
+                        isRegisterPasswordFocused || registerPassword ? 'active' : ''
+                      }`}
+                    >
+                      <input
+                        id="register-password"
+                        type="password"
+                        value={registerPassword}
+                        name="registerPassword"
+                        onFocus={() => focusInput('registerPassword')}
+                        onBlur={() => blurInput('registerPassword')}
+                        onChange={(e) => setRegisterPassword(e.target.value)}
+                        required
+                      />
+                      <label htmlFor="register-password">Password</label>
+                    </div>
+                    <div
+                      className={`input ${
+                        isConfirmPasswordFocused || confirmPassword ? 'active' : ''
+                      }`}
+                    >
+                      <input
+                        id="confirm-password"
+                        type="password"
+                        value={confirmPassword}
+                        name="confirmPassword"
+                        onFocus={() => focusInput('confirmPassword')}
+                        onBlur={() => blurInput('confirmPassword')}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required
+                      />
+                      <label htmlFor="confirm-password">Confirm Password</label>
+                    </div>
+                    <span className="checkbox remember">
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        checked={acceptTerms}
+                        name="acceptTerms"
+                        onChange={(e) => setAcceptTerms(e.target.checked)}
+                        required
+                      />
+                      <label htmlFor="terms" className="read-text">
+                        I have read <b>Terms and Conditions</b>
+                      </label>
+                    </span>
+                    <button type="submit" disabled={!isRegisterFormValid || loading}>
+                      {loading ? 'Registering...' : 'Register'}
+                    </button>
+                  </form>
+                  <button type="button" className="account-check" onClick={toggleCard}>
+                    Already have an account? <b>Sign in</b>
+                  </button>
                 </div>
-                <div
-                  className={`input ${
-                    isRegisterPasswordFocused || registerPassword ? 'active' : ''
-                  }`}
-                >
-                  <input
-                    id="register-password"
-                    type="password"
-                    value={registerPassword}
-                    name="registerPassword"
-                    onFocus={() => focusInput('registerPassword')}
-                    onBlur={() => blurInput('registerPassword')}
-                    onChange={(e) => setRegisterPassword(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="register-password">Password</label>
-                </div>
-                <div
-                  className={`input ${isConfirmPasswordFocused || confirmPassword ? 'active' : ''}`}
-                >
-                  <input
-                    id="confirm-password"
-                    type="password"
-                    value={confirmPassword}
-                    name="confirmPassword"
-                    onFocus={() => focusInput('confirmPassword')}
-                    onBlur={() => blurInput('confirmPassword')}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                  />
-                  <label htmlFor="confirm-password">Confirm Password</label>
-                </div>
-                <span className="checkbox remember">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    checked={acceptTerms}
-                    name="acceptTerms"
-                    onChange={(e) => setAcceptTerms(e.target.checked)}
-                    required
-                  />
-                  <label htmlFor="terms" className="read-text">
-                    I have read <b>Terms and Conditions</b>
-                  </label>
-                </span>
-                <button type="submit" disabled={!isRegisterFormValid || loading}>
-                  {loading ? 'Registering...' : 'Register'}
-                </button>
-              </form>
-              <button type="button" className="account-check" onClick={toggleCard}>
-                Already have an account? <b>Sign in</b>
-              </button>
+              </div>
             </div>
+            {/* 기존의 card 관련 요소들은 제거 또는 주석 처리 */}
           </div>
         </div>
       </div>
