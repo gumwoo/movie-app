@@ -1,30 +1,34 @@
 /* src/components/MovieCard/MovieCard.css */
 
-.movie-card {
+.custom-movie-card {
     position: relative;
     width: 200px;
+    height: 300px; /* 원하는 높이 */
     margin: 10px;
     cursor: pointer;
     transition: transform 0.3s;
+    overflow: hidden;
+    border-radius: 8px;
   }
   
-  .movie-card:hover {
+  .custom-movie-card:hover {
     transform: scale(1.05);
   }
   
-  .movie-poster {
+  .custom-movie-poster {
     width: 100%;
-    height: auto;
-    border-radius: 5px;
+    height: 100%;
+    object-fit: cover;
   }
   
-  .movie-title {
+  .custom-movie-title {
     margin-top: 10px;
     font-size: 16px;
     text-align: center;
+    color: #fff;
   }
   
-  .wishlist-indicator {
+  .custom-wishlist-indicator {
     position: absolute;
     top: 10px;
     right: 10px;
@@ -33,7 +37,7 @@
     padding: 5px;
   }
   
-  .wishlist-button {
+  .custom-wishlist-button {
     position: absolute;
     bottom: 10px;
     left: 50%;
@@ -48,20 +52,21 @@
     transition: opacity 0.3s;
   }
   
-  .wishlist-button:hover {
+  .custom-wishlist-button:hover {
     opacity: 1;
   }
   
   @media (max-width: 768px) {
-    .movie-card {
+    .custom-movie-card {
       width: 120px;
+      height: 180px;
     }
   
-    .movie-title {
+    .custom-movie-title {
       font-size: 14px;
     }
   
-    .wishlist-button {
+    .custom-wishlist-button {
       padding: 3px 6px;
       font-size: 12px;
     }

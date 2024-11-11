@@ -16,17 +16,17 @@ function MovieCard({ movie, onToggleWishlist, isInWishlist }) {
   };
 
   return (
-    <div className="movie-card" onClick={handleClick}>
+    <div className="custom-movie-card" onClick={handleClick}>
       <LazyLoadImage
         src={posterUrl}
         alt={movie.title}
         effect="blur"
-        className="movie-poster"
+        className="custom-movie-poster"
         placeholderSrc="/placeholder-image.jpg" // 대체 이미지 경로
       />
-      <div className="movie-title">{movie.title}</div>
+      <div className="custom-movie-title">{movie.title}</div>
       <button
-        className="wishlist-button"
+        className="custom-wishlist-button"
         onClick={(e) => {
           e.stopPropagation(); // 부모의 onClick 이벤트 방지
           onToggleWishlist(movie);
