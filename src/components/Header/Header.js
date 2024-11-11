@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faTicketAlt, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ThemeToggle from '../ThemeToggle/ThemeToggle'; // ThemeToggle 컴포넌트 임포트
 import netflixLogo from './netflix-logo.png'; // 로고 이미지 임포트
 import './Header.css';
