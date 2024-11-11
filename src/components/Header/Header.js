@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faTicketAlt, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import ThemeToggle from '../ThemeToggle/ThemeToggle'; // ThemeToggle 컴포넌트 임포트
+import netflixLogo from './netflix-logo.png'; // 로고 이미지 임포트
 import './Header.css';
 
 function Header() {
@@ -35,7 +36,7 @@ function Header() {
         <div className="header-left">
           <div className="logo">
             <Link to="/">
-              <FontAwesomeIcon icon={faTicketAlt} style={{ height: '100%', color: '#E50914' }} />
+            <img src={netflixLogo} alt="Netflix Logo" style={{ height: '60px' }} />
             </Link>
           </div>
           <nav className="nav-links desktop-nav">
