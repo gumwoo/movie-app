@@ -44,6 +44,8 @@
   }
   
   .nav-links a {
+    position: relative;
+    overflow: hidden;
     color: var(--header-text-color);
     text-decoration: none;
     font-size: 0.85rem;
