@@ -11,10 +11,12 @@
   align-items: center;
   position: relative;
   margin-bottom: 20px;
+  width: 100%; /* 추가 */
 }
 
 .movie-search-container input[type="text"] {
   flex: 1;
+  min-width: 0; /* 추가 */
   padding: 12px;
   font-size: 16px;
   color: var(--text-color);
@@ -22,11 +24,13 @@
   border: 1px solid #ccc;
   border-radius: 4px 0 0 4px;
   outline: none;
-  direction: auto;
+  direction: ltr; /* 수정 */
+  text-align: left; /* 추가 */
 }
 
 .movie-search-container button[type="submit"] {
   flex: 0 0 auto; /* 이 줄을 추가 */
+  flex-shrink: 0; /* 추가 */
   padding: 12px 16px;
   font-size: 16px;
   background-color: var(--button-background);

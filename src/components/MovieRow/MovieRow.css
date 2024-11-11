@@ -37,7 +37,7 @@
     padding: 20px 0;
   }
   
-  .movie-card {
+  .row-movie-card {
     flex: 0 0 auto;
     width: 200px;
     margin-right: 10px;
@@ -46,11 +46,11 @@
     cursor: pointer;
   }
   
-  .movie-card:hover {
+  .row-movie-card:hover {
     transform: scale(1.05);
   }
   
-  .movie-card img {
+  .row-movie-card img {
     width: 100%;
     height: auto;
     border-radius: 4px;

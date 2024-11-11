@@ -118,7 +118,7 @@ function SignIn() {
   };
 
   return (
-    <div>
+    <div className="sign-in-container">
       <div className="bg-image"></div>
       <div className="container">
         <div id="phone">
