@@ -68,7 +68,7 @@
 
 @media (max-width: 768px) {
   .movie-grid {
-    height: calc(90svh - 200px);
+    height: calc(90vh - 200px);
   }
 
   .pagination button {

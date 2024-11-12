@@ -37,8 +37,8 @@ a {
 }
 
 .container {
-  height: 100svh;
-  width: 100svw;
+  height: 100vh;
+  width: 100vw;
   position: absolute;
   top: 0;
   left: 0;
@@ -49,7 +49,7 @@ a {
 }
 
 #phone {
-  width: 50svw;
+  width: 50vw;
   max-width: 80dvh;
   max-height: 50dvh;
   aspect-ratio: 3.35 / 4;

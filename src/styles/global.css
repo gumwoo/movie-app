@@ -8,7 +8,11 @@
   --link-color: #646cff;
   --button-background: #E50914;
   --button-text-color: #ffffff;
-  /* 필요한 다른 색상 변수들을 추가하세요 */
+  /* 추가적인 색상 변수들 */
+  --font-size-base: 16px;
+  --font-size-large: 1.25rem; /* 20px */
+  --font-size-medium: 1rem; /* 16px */
+  --font-size-small: 0.875rem; /* 14px */
 }
 
 body {
@@ -17,6 +21,7 @@ body {
   color: var(--text-color);
   overflow-x: hidden;
   background-color: var(--background-color);
+  font-size: var(--font-size-base);
 }
 
 body.light {
@@ -42,7 +47,8 @@ body.dark {
 a {
   font-weight: 500;
   color: var(--link-color);
-  text-decoration: inherit;
+  text-decoration: none;
+  font-size: var(--font-size-medium);
 }
 
 a:hover {
@@ -50,4 +56,48 @@ a:hover {
   opacity: 0.8;
 }
 
-/* 기타 글로벌 스타일 */
+button {
+  font-size: var(--font-size-medium);
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px; /* 작은 화면에서 기본 폰트 크기 감소 */
+  }
+
+  a {
+    font-size: 0.875rem; /* 14px */
+  }
+
+  button {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 13px; /* 더욱 작은 화면에서 폰트 크기 감소 */
+  }
+
+  a {
+    font-size: 0.75rem; /* 12px */
+  }
+
+  button {
+    font-size: 0.75rem;
+  }
+}
+
+/* 모든 이미지가 반응형으로 표시되도록 설정 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
