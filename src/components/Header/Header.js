@@ -17,6 +17,34 @@ function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // 메뉴 외부 클릭 시 닫기
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (isMobileMenuOpen) {
+        const mobileNav = document.querySelector('.mobile-nav');
+        const mobileMenuButton = document.querySelector('.mobile-menu-button');
+        if (
+          mobileNav &&
+          !mobileNav.contains(event.target) &&
+          mobileMenuButton &&
+          !mobileMenuButton.contains(event.target)
+        ) {
+          setIsMobileMenuOpen(false);
+        }
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('click', handleOutsideClick);
+    } else {
+      document.removeEventListener('click', handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [isMobileMenuOpen]);
+
   const removeKey = () => {
     localStorage.removeItem('TMDb-Key');
     navigate('/signin');
@@ -36,7 +64,7 @@ function Header() {
         <div className="header-left">
           <div className="logo">
             <Link to="/">
-            <img src={netflixLogo} alt="Netflix Logo" style={{ height: '60px' }} />
+              <img src={netflixLogo} alt="Netflix Logo" style={{ height: '50px' }} />
             </Link>
           </div>
           <nav className="nav-links desktop-nav">
@@ -63,20 +91,21 @@ function Header() {
           <Link to="/search" className="search-link">
             검색
           </Link>
-          <button className="icon-button" onClick={removeKey}>
+          <button className="icon-button" onClick={removeKey} aria-label="사용자 프로필">
             <FontAwesomeIcon icon={faUser} />
           </button>
-          <button className="icon-button mobile-menu-button" onClick={toggleMobileMenu}>
-            <FontAwesomeIcon icon={faBars} />
+          <button
+            className={`mobile-menu-button ${isMobileMenuOpen ? 'open' : ''}`}
+            onClick={toggleMobileMenu}
+            aria-label="메뉴 열기/닫기"
+          >
+            <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} />
           </button>
         </div>
       </header>
 
       {/* 모바일 네비게이션 */}
       <div className={`mobile-nav ${isMobileMenuOpen ? 'open' : ''}`}>
-        <button className="close-button" onClick={toggleMobileMenu}>
-          <FontAwesomeIcon icon={faTimes} />
-        </button>
         <nav>
           <ul>
             <li>
