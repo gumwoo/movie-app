@@ -2,14 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
-import ThemeToggle from '../ThemeToggle/ThemeToggle'; // ThemeToggle 컴포넌트 임포트
+import { faUser, faBars, faTimes, faHome, faFire, faSearch, faHeart, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { useSelector } from 'react-redux';
 import netflixLogo from './netflix-logo.png'; // 로고 이미지 임포트
 import './Header.css';
 
 function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useSelector(state => state.auth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,30 +70,24 @@ function Header() {
           </div>
           <nav className="nav-links desktop-nav">
             <ul>
-              <li>
-                <Link to="/">홈</Link>
-              </li>
-              <li>
-                <Link to="/popular">대세 콘텐츠</Link>
-              </li>
-              <li>
-                <Link to="/wishlist">내가 찜한 리스트</Link>
-              </li>
-              <li>
-                <Link to="/search">찾아보기</Link>
-              </li>
+              <li><Link to="/"><FontAwesomeIcon icon={faHome} /> 홈</Link></li>
+              <li><Link to="/popular"><FontAwesomeIcon icon={faFire} /> 대세 콘텐츠</Link></li>
+              <li><Link to="/wishlist"><FontAwesomeIcon icon={faHeart} /> 내가 찜한 리스트</Link></li>
+              <li><Link to="/search"><FontAwesomeIcon icon={faSearch} /> 찾아보기</Link></li>
             </ul>
           </nav>
         </div>
         <div className="header-right">
-          {/* 테마 토글 버튼 추가 */}
-          <ThemeToggle />
-          {/* '검색' 링크 추가 */}
+          {user && <span className="user-info">{user.email}</span>}
           <Link to="/search" className="search-link">
-            검색
+            <FontAwesomeIcon icon={faSearch} />
           </Link>
-          <button className="icon-button" onClick={removeKey} aria-label="사용자 프로필">
-            <FontAwesomeIcon icon={faUser} />
+          <button 
+            className="icon-button logout-button" 
+            onClick={removeKey} 
+            aria-label="로그아웃"
+          >
+            <FontAwesomeIcon icon={faSignOutAlt} /> 로그아웃
           </button>
           <button
             className={`mobile-menu-button ${isMobileMenuOpen ? 'open' : ''}`}
