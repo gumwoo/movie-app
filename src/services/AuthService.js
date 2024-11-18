@@ -1,5 +1,9 @@
 // src/services/AuthService.js
 class AuthService {
+  constructor() {
+    this.apiKey = process.env.REACT_APP_TMDB_API_KEY;
+  }
+
   tryLogin(email, password, saveToken = true) {
     return new Promise((resolve, reject) => {
       const users = JSON.parse(localStorage.getItem('users') || '[]');
@@ -7,14 +11,13 @@ class AuthService {
 
       if (user) {
         if (saveToken) {
-          localStorage.setItem('TMDb-Key', user.password);
-          // 사용자 정보도 함께 반환
+          localStorage.setItem('TMDb-Key', this.apiKey); // TMDB API 키 저장
           const userData = { email: user.id };
           localStorage.setItem('user', JSON.stringify(userData));
         }
-        resolve({ email: user.id }); // 이메일 정보 포함하여 반환
+        resolve({ email: user.id });
       } else {
-        reject('Login failed');
+        reject('이메일 또는 비밀번호가 일치하지 않습니다.');
       }
     });
   }
