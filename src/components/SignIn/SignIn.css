@@ -173,6 +173,7 @@ button:hover {
 .input {
   position: relative;
   margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .input input {
@@ -210,6 +211,15 @@ button:hover {
   transform: translateY(-14px) scale(0.8);
   transform-origin: 0 0;
   color: #2069ff;
+}
+
+.error-message {
+  color: #ff3333;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  position: absolute;
+  bottom: -20px;
+  left: 0;
 }
 
 [type='checkbox'] {
@@ -272,6 +282,26 @@ button:hover {
   color: #000;
   font-weight: 900;
   cursor: pointer;
+}
+
+.terms-view-button {
+  background: none;
+  border: none;
+  color: #2069ff;
+  padding: 0 5px;
+  font-size: 0.9rem;
+  font-weight: normal;
+  box-shadow: none;
+  display: inline;
+  width: auto;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.terms-view-button:hover {
+  color: #1756d8;
+  transform: none;
+  box-shadow: none;
 }
 
 .account-check {
