@@ -76,3 +76,24 @@
     font-size: 14px;
   }
 }
+
+@media screen and (orientation: landscape) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media screen and (orientation: portrait) {
+  .grid-container {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .movie-grid {
+    height: auto;
+    min-height: 85vh;
+  }
+}
