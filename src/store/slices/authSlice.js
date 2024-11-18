@@ -34,7 +34,7 @@ export const registerUser = createAsyncThunk(
 // 초기 상태 설정
 const initialState = {
   isAuthenticated: localStorage.getItem('TMDb-Key') ? true : false,
-  user: null,
+  user: JSON.parse(localStorage.getItem('user')) || null,
   loading: false,
   error: null,
 };
@@ -49,6 +49,13 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.user = null;
       localStorage.removeItem('TMDb-Key');
+      localStorage.removeItem('user');
+    },
+    loginSuccess(state, action) {
+      state.isAuthenticated = true;
+      state.user = action.payload;
+      state.loading = false;
+      localStorage.setItem('user', JSON.stringify(action.payload));
     },
   },
   extraReducers: (builder) => {
@@ -62,6 +69,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload;
+        localStorage.setItem('user', JSON.stringify(action.payload));
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -84,5 +92,5 @@ const authSlice = createSlice({
 });
 
 // 액션과 리듀서를 내보냅니다.
-export const { logout } = authSlice.actions;
+export const { logout, loginSuccess } = authSlice.actions;
 export default authSlice.reducer;

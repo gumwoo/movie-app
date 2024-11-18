@@ -1,9 +1,9 @@
 /* src/styles/global.css */
 
 :root {
-  --background-color: #2b2b2b;
+  --background-color: #141414;
   --text-color: #ffffff;
-  --header-background: transparent;
+  --header-background: rgba(0, 0, 0, 0.9);
   --header-text-color: #ffffff;
   --link-color: #646cff;
   --button-background: #E50914;
@@ -22,26 +22,6 @@ body {
   overflow-x: hidden;
   background-color: var(--background-color);
   font-size: var(--font-size-base);
-}
-
-body.light {
-  --background-color: #ffffff;
-  --text-color: #000000;
-  --header-background: rgba(255, 255, 255, 0.9);
-  --header-text-color: #000000;
-  --link-color: #646cff;
-  --button-background: #E50914;
-  --button-text-color: #ffffff;
-}
-
-body.dark {
-  --background-color: #121212;
-  --text-color: #ffffff;
-  --header-background: rgba(0, 0, 0, 0.9);
-  --header-text-color: #ffffff;
-  --link-color: #9b9bff;
-  --button-background: #E50914;
-  --button-text-color: #ffffff;
 }
 
 a {
@@ -126,4 +106,26 @@ img {
   max-width: 100%;
   height: auto;
   display: block;
+}
+
+/* 페이지 전환 애니메이션 */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 300ms, transform 300ms;
 }
