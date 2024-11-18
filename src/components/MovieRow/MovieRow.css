@@ -104,4 +104,33 @@
       margin: 0 10px;
     }
   }
+
+  @media screen and (orientation: landscape) {
+    .row-movie-card {
+      width: 160px;
+    }
+    
+    .slider-window {
+      margin: 0 30px;
+    }
+  }
   
+  @media screen and (orientation: portrait) {
+    .row-movie-card {
+      width: 120px;
+    }
+    
+    .slider-window {
+      margin: 0 20px;
+    }
+  }
+  
+  @media (max-height: 500px) and (orientation: landscape) {
+    .movie-row {
+      margin-bottom: 15px;
+    }
+    
+    .slider-button {
+      padding: 15px 8px;
+    }
+  }
