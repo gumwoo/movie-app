@@ -39,8 +39,8 @@
   
   .row-movie-card {
     flex: 0 0 auto;
-    width: 200px;
-    margin-right: 10px;
+    width: 400px;  /* 350px에서 400px로 증가 */
+    margin-right: 25px;  /* 20px에서 25px로 여백 증가 */
     transition: transform 0.3s;
     position: relative;
     cursor: pointer;
@@ -103,11 +103,15 @@
     .slider-window {
       margin: 0 10px;
     }
+
+    .row-movie-card {
+      width: 280px;  /* 250px에서 280px로 증가 */
+    }
   }
 
   @media screen and (orientation: landscape) {
     .row-movie-card {
-      width: 160px;
+      width: 200px;  /* 160px에서 200px로 증가 */
     }
     
     .slider-window {

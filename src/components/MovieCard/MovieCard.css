@@ -2,18 +2,22 @@
 
 .custom-movie-card {
     position: relative;
-    width: 200px;
-    margin: 10px;
+    width: 250px;  /* 200px에서 250px로 증가 */
+    margin: 15px;  /* 10px에서 15px로 여백 증가 */
     cursor: pointer;
     transition: transform 0.3s;
     overflow: hidden;
     border-radius: 8px;
     transition: transform 0.3s, box-shadow 0.3s;
+    transform: scale(1);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
   .custom-movie-card:hover {
     transform: scale(1.05) translateY(-5px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+    z-index: 1;
   }
   
   .custom-movie-poster {
@@ -59,8 +63,8 @@
   
   @media (max-width: 768px) {
     .custom-movie-card {
-      width: 120px;
-      height: 180px;
+      width: 160px;  /* 120px에서 160px로 증가 */
+      height: 240px; /* 180px에서 240px로 증가 */
     }
   
     .custom-movie-title {
@@ -72,4 +76,23 @@
       font-size: 12px;
     }
   }
-  
+
+.custom-movie-card.in-wishlist {
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.5);
+  position: relative;
+}
+
+.custom-movie-card.in-wishlist::before {
+  content: '❤️';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 5px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.custom-wishlist-button.in-wishlist {
+  background-color: #28a745;
+}

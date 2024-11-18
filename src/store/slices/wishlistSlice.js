@@ -24,6 +24,7 @@ const wishlistSlice = createSlice({
       } else {
         state.wishlist.push(action.payload);
       }
+      // 로컬 스토리지에 즉시 저장
       localStorage.setItem('movieWishlist', JSON.stringify(state.wishlist));
     },
   },
