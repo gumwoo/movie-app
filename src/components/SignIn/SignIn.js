@@ -1,10 +1,11 @@
 // src/components/SignIn/SignIn.js
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './SignIn.css';
+import Terms from '../Terms/Terms';
 
 function SignIn() {
   const { handleLogin, handleRegister, loading } = useAuth();
@@ -20,6 +21,7 @@ function SignIn() {
 
   const [rememberMe, setRememberMe] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
@@ -28,6 +30,7 @@ function SignIn() {
   const [isConfirmPasswordFocused, setIsConfirmPasswordFocused] = useState(false);
 
   const formWrapperRef = useRef(null);
+  const [emailError, setEmailError] = useState('');
 
   const isLoginFormValid = email && password;
   const isRegisterFormValid =
@@ -85,19 +88,32 @@ function SignIn() {
     }
   };
 
+  const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+  };
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEmail(email)) {
+      setEmailError('유효한 이메일 주소를 입력해주세요.');
+      return;
+    }
     try {
       await handleLogin(email, password);
       toast.success('로그인에 성공했습니다!');
       navigate('/');
     } catch (err) {
-      toast.error(err);
+      toast.error('로그인에 실패했습니다. ' + err);
     }
   };
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    if (!validateEmail(registerEmail)) {
+      setEmailError('유효한 이메일 주소를 입력해주세요.');
+      return;
+    }
     if (registerPassword !== confirmPassword) {
       toast.error('비밀번호가 일치하지 않습니다.');
       return;
@@ -107,17 +123,26 @@ function SignIn() {
       toast.success('회원가입에 성공했습니다! 로그인 해주세요.');
       toggleCard();
     } catch (err) {
-      toast.error(err);
+      toast.error('회원가입에 실패했습니다. ' + err);
     }
+  };
+
+  const handleTermsAgree = () => {
+    setAcceptTerms(true);
+    setIsTermsModalOpen(false);
+  };
+
+  const openTermsModal = (e) => {
+    e.preventDefault();
+    setIsTermsModalOpen(true);
   };
 
   return (
     <div className="sign-in-container">
-      <div className="bg-image"></div>
+      <div className="bg-image" />
       <div className="container">
         <div id="phone">
           <div id="content-wrapper">
-            {/* 폼 컨테이너 */}
             <div className="form-container">
               <div
                 className={`form-wrapper ${!isLoginVisible ? 'show-signup' : ''}`}
@@ -126,7 +151,7 @@ function SignIn() {
                 {/* 로그인 폼 */}
                 <div className="form" id="login">
                   <form onSubmit={handleLoginSubmit}>
-                    <h1>Sign in</h1>
+                    <h1>로그인</h1>
                     <div className={`input ${isEmailFocused || email ? 'active' : ''}`}>
                       <input
                         id="email"
@@ -137,8 +162,10 @@ function SignIn() {
                         onBlur={() => blurInput('email')}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                       />
-                      <label htmlFor="email">Username or Email</label>
+                      <label htmlFor="email">이메일</label>
+                      {emailError && <span className="error-message">{emailError}</span>}
                     </div>
                     <div className={`input ${isPasswordFocused || password ? 'active' : ''}`}>
                       <input
@@ -151,7 +178,7 @@ function SignIn() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                       />
-                      <label htmlFor="password">Password</label>
+                      <label htmlFor="password">비밀번호</label>
                     </div>
                     <span className="checkbox remember">
                       <input
@@ -162,7 +189,7 @@ function SignIn() {
                         onChange={(e) => setRememberMe(e.target.checked)}
                       />
                       <label htmlFor="remember" className="read-text">
-                        Remember me
+                        로그인 상태 유지
                       </label>
                     </span>
                     <span className="checkbox forgot">
@@ -170,30 +197,26 @@ function SignIn() {
                         type="button"
                         className="forgot-password-button"
                         onClick={() => {
-                          toast.info('Forgot Password 기능은 아직 구현되지 않았습니다.');
+                          toast.info('비밀번호 찾기 기능은 아직 구현되지 않았습니다.');
                         }}
                       >
-                        Forgot Password?
+                        비밀번호 찾기
                       </button>
                     </span>
                     <button type="submit" disabled={!isLoginFormValid || loading}>
-                      {loading ? 'Logging in...' : 'Login'}
+                      {loading ? '로그인 중...' : '로그인'}
                     </button>
                   </form>
                   <button type="button" className="account-check" onClick={toggleCard}>
-                    Don't have an account? <b>Sign up</b>
+                    계정이 없으신가요? <b>회원가입</b>
                   </button>
                 </div>
 
                 {/* 회원가입 폼 */}
                 <div className="form" id="register">
                   <form onSubmit={handleRegisterSubmit}>
-                    <h1>Sign up</h1>
-                    <div
-                      className={`input ${
-                        isRegisterEmailFocused || registerEmail ? 'active' : ''
-                      }`}
-                    >
+                    <h1>회원가입</h1>
+                    <div className={`input ${isRegisterEmailFocused || registerEmail ? 'active' : ''}`}>
                       <input
                         id="register-email"
                         type="email"
@@ -204,13 +227,9 @@ function SignIn() {
                         onChange={(e) => setRegisterEmail(e.target.value)}
                         required
                       />
-                      <label htmlFor="register-email">Email</label>
+                      <label htmlFor="register-email">이메일</label>
                     </div>
-                    <div
-                      className={`input ${
-                        isRegisterPasswordFocused || registerPassword ? 'active' : ''
-                      }`}
-                    >
+                    <div className={`input ${isRegisterPasswordFocused || registerPassword ? 'active' : ''}`}>
                       <input
                         id="register-password"
                         type="password"
@@ -221,13 +240,9 @@ function SignIn() {
                         onChange={(e) => setRegisterPassword(e.target.value)}
                         required
                       />
-                      <label htmlFor="register-password">Password</label>
+                      <label htmlFor="register-password">비밀번호</label>
                     </div>
-                    <div
-                      className={`input ${
-                        isConfirmPasswordFocused || confirmPassword ? 'active' : ''
-                      }`}
-                    >
+                    <div className={`input ${isConfirmPasswordFocused || confirmPassword ? 'active' : ''}`}>
                       <input
                         id="confirm-password"
                         type="password"
@@ -238,7 +253,7 @@ function SignIn() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required
                       />
-                      <label htmlFor="confirm-password">Confirm Password</label>
+                      <label htmlFor="confirm-password">비밀번호 확인</label>
                     </div>
                     <span className="checkbox remember">
                       <input
@@ -250,23 +265,34 @@ function SignIn() {
                         required
                       />
                       <label htmlFor="terms" className="read-text">
-                        I have read <b>Terms and Conditions</b>
+                        <span>이용약관에 동의합니다</span>
+                        <button
+                          type="button"
+                          className="terms-view-button"
+                          onClick={openTermsModal}
+                        >
+                          약관 보기
+                        </button>
                       </label>
                     </span>
                     <button type="submit" disabled={!isRegisterFormValid || loading}>
-                      {loading ? 'Registering...' : 'Register'}
+                      {loading ? '가입 중...' : '회원가입'}
                     </button>
                   </form>
                   <button type="button" className="account-check" onClick={toggleCard}>
-                    Already have an account? <b>Sign in</b>
+                    이미 계정이 있으신가요? <b>로그인</b>
                   </button>
                 </div>
               </div>
             </div>
-            {/* 기존의 card 관련 요소들은 제거 또는 주석 처리 */}
           </div>
         </div>
       </div>
+      <Terms 
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+        onAgree={handleTermsAgree}
+      />
       <ToastContainer />
     </div>
   );
