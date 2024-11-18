@@ -84,4 +84,38 @@
       font-size: 0.75rem;
     }
   }
+
+  @media screen and (orientation: landscape) {
+    .banner {
+      height: 80vh;
+    }
+    
+    .banner-content {
+      padding: 30px;
+    }
+  }
   
+  @media screen and (orientation: portrait) {
+    .banner {
+      height: 50vh;
+    }
+    
+    .banner h1 {
+      font-size: 2rem;
+    }
+  }
+  
+  @media (max-height: 500px) and (orientation: landscape) {
+    .banner {
+      height: 90vh;
+    }
+    
+    .banner-content {
+      padding: 15px;
+    }
+    
+    .title-btn {
+      width: 80px;
+      font-size: 0.7rem;
+    }
+  }
