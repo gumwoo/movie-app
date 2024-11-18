@@ -32,6 +32,14 @@ class URLService {
     return `${this.baseURL}/movie/now_playing?api_key=${this.apiKey}&language=${this.language}`;
   };
 
+  getURL4TopRatedMovies = () => {
+    return `${this.baseURL}/movie/top_rated?api_key=${this.apiKey}&language=${this.language}`;
+  };
+
+  getURL4GenreMovies = (genreId) => {
+    return `${this.baseURL}/discover/movie?api_key=${this.apiKey}&language=${this.language}&with_genres=${genreId}&sort_by=popularity.desc`;
+  };
+
   // 인기 영화 목록 조회 함수 (react-query용)
   fetchPopularMovies = async (page = 1) => {
     const response = await axios.get(`${this.baseURL}/movie/popular`, {
@@ -51,6 +59,34 @@ class URLService {
       params: {
         api_key: this.apiKey,
         language: this.language,
+        page,
+      },
+      headers: this.headers,
+    });
+    return response.data.results;
+  };
+
+  // 높은 평점 영화 조회 함수 추가
+  fetchTopRatedMovies = async (page = 1) => {
+    const response = await axios.get(`${this.baseURL}/movie/top_rated`, {
+      params: {
+        api_key: this.apiKey,
+        language: this.language,
+        page,
+      },
+      headers: this.headers,
+    });
+    return response.data.results;
+  };
+
+  // 장르별 영화 조회 함수 추가
+  fetchGenreMovies = async (genreId, page = 1) => {
+    const response = await axios.get(`${this.baseURL}/discover/movie`, {
+      params: {
+        api_key: this.apiKey,
+        language: this.language,
+        with_genres: genreId,
+        sort_by: 'popularity.desc',
         page,
       },
       headers: this.headers,
