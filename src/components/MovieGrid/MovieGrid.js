@@ -1,5 +1,5 @@
 // src/components/MovieGrid/MovieGrid.js
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleWishlist } from '../../store/slices/wishlistSlice';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -8,6 +8,7 @@ import MovieCard from '../MovieCard/MovieCard';
 import './MovieGrid.css';
 
 function MovieGrid({ fetchUrl }) {
+  const [showTopButton, setShowTopButton] = useState(false);
   const urlService = new URLService();
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
@@ -68,6 +69,22 @@ function MovieGrid({ fetchUrl }) {
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowTopButton(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   const handleToggleWishlist = (movie) => {
     dispatch(toggleWishlist(movie));
   };
@@ -112,6 +129,11 @@ function MovieGrid({ fetchUrl }) {
         {isFetchingNextPage && <div className="loading-spinner">Loading more...</div>}
         {!hasNextPage && <div className="end-message">더 이상 영화가 없습니다.</div>}
       </div>
+      {showTopButton && (
+        <button className="scroll-to-top" onClick={scrollToTop}>
+          Top
+        </button>
+      )}
     </div>
   );
 }
