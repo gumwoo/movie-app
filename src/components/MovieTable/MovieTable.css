@@ -45,7 +45,7 @@ th, td {
   left: 0;
   right: 0;
   padding: 15px;
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.95); /* 배경색 더 진하게 */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -72,8 +72,11 @@ th, td {
   font-size: 1.1rem;
   font-weight: bold;
   padding: 8px 16px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7);
   border-radius: 20px;
+  min-width: 40px;
+  text-align: center;
+  font-family: system-ui, -apple-system, sans-serif; /* 무한대 기호를 위한 폰트 추가 */
 }
 
 .wishlist-btn {
