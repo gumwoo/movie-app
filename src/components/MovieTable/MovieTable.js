@@ -8,26 +8,27 @@ import './MovieTable.css';
 
 function MovieTable({ fetchUrl }) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.wishlist);
   const urlService = new URLService();
-  const itemsPerPage = 4; // 4개로 변경
+  const itemsPerPage = 4;
 
-  const { data, isLoading } = useQuery({
+  // useQuery로 변경하여 데이터 가져오기
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: ['popularMoviesTable', currentPage],
     queryFn: async () => {
+      // 현재 페이지의 데이터를 가져옴
       const response = await urlService.fetchPopularMovies(currentPage);
-      setTotalResults(60); // 전체 결과 수 유지
-      return response.slice(0, 4); // 4개만 반환하도록 수정
+      return response;
     },
-    keepPreviousData: true,
+    keepPreviousData: true, // 이전 데이터 유지
   });
 
   if (isLoading) return <LoadingSpinner />;
   if (!data) return <div>데이터를 불러올 수 없습니다.</div>;
 
-  const totalPages = Math.ceil(totalResults / itemsPerPage);
+  // 현재 페이지의 영화만 표시
+  const currentMovies = data.slice(0, itemsPerPage);
 
   return (
     <div className="movie-table-wrapper">
@@ -43,7 +44,7 @@ function MovieTable({ fetchUrl }) {
             </tr>
           </thead>
           <tbody>
-            {data.map(movie => (
+            {currentMovies.map(movie => (
               <tr key={movie.id}>
                 <td>
                   <img 
@@ -76,12 +77,12 @@ function MovieTable({ fetchUrl }) {
             이전
           </button>
           <span className="page-indicator">
-            {currentPage} / {totalPages}
+            {currentPage}
           </span>
           <button
             className="page-btn"
-            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(prev => prev + 1)}
+            disabled={isFetching || currentMovies.length < itemsPerPage}
           >
             다음
           </button>
