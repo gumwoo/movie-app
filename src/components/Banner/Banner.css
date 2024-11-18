@@ -1,5 +1,5 @@
 .banner {
-    height: 80vh;  /* 60vh에서 80vh로 증가 */
+    height: 70vh;  /* 80vh에서 70vh로 줄임 */
     max-width: 100vw;  /* 95vw에서 100vw로 변경 */
     background-size: cover;
     background-position: center;
@@ -7,28 +7,65 @@
     display: flex;
     align-items: flex-end;
     margin-top: 50px;
+    position: relative;
+    margin-bottom: 0; /* 마진 제거 */
+    z-index: 1;
   }
   
   .banner-content {
-    padding: 60px;  /* 50px에서 60px로 증가 */
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+    padding: 20px; /* 상단 패딩 증가 */
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgba(0, 0, 0, 0.2) 20%,
+      rgba(0, 0, 0, 0.4) 40%,
+      rgba(0, 0, 0, 0.6) 60%,
+      rgba(0, 0, 0, 0.8) 80%,
+      rgba(0, 0, 0, 0.95) 100%
+    );
     width: 100%;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    position: relative;
+    z-index: 10;
+  }
+
+  .banner::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; /* 경계선 제거 */
+    left: 0;
+    right: 0;
+    height: 150px;
+    display: none; /* 배경 제거 */
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      #141414 100%
+    );
+    z-index: 1;
   }
   
   .banner h1 {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
   }
   
   .banner p {
-    font-size: 1rem;
-    max-width: 500px;
-    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    max-width: 800px; /* 더 넓은 텍스트 영역 */
+    margin-bottom: 2rem;
     text-align: left;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    color: #ffffff;
+    line-height: 1.8;
+    font-weight: 400;
   }
   
   .play-btn, .info-btn {
@@ -38,6 +75,8 @@
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
+    font-weight: 600;
+    text-shadow: none;
   }
   
   .play-btn {
@@ -57,13 +96,20 @@
   
   @media screen and (max-height: 768px) {
     .banner h1 {
+      height: auto;
       font-size: 2.5rem;
       margin-bottom: 0.5rem;
     }
   
     .banner-content {
       padding: 15px;
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.4) 40%,
+        rgba(0, 0, 0, 0.8) 80%,
+        rgba(0, 0, 0, 0.95) 100%
+      );
       width: 100%;
       box-sizing: border-box;
       display: flex;
@@ -117,5 +163,30 @@
     .title-btn {
       width: 80px;
       font-size: 0.7rem;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .banner {
+      height: 60vh;
+    }
+
+    .banner-content {
+      padding: 40px 20px;
+    }
+  }
+
+  @media screen and (max-width: 768px) {
+    .banner {
+      height: auto;
+      margin-bottom: 20px;
+    }
+
+    .banner::after {
+      height: 100px;
+    }
+
+    .banner-content {
+      padding: 30px 15px;
     }
   }

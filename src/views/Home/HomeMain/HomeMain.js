@@ -5,28 +5,30 @@ import Banner from '../../../components/Banner/Banner';
 import MovieRow from '../../../components/MovieRow/MovieRow';
 import URLService from '../../../services/URLService';
 import { useQuery } from '@tanstack/react-query';
+import './HomeMain.css';
 
 function HomeMain() {
   const urlService = new URLService();
 
-  // 인기 영화 데이터를 패칭하고 첫 번째 영화를 featuredMovie로 설정
   const { data: featuredMovie, isLoading, isError, error } = useQuery({
     queryKey: ['featuredMovies'],
-    queryFn: () => urlService.fetchPopularMovies(1),
-    select: (data) => data[0], // 첫 번째 영화를 선택
-    staleTime: 1000 * 60 * 5, // 5분 동안 데이터 신선하게 유지
-    cacheTime: 1000 * 60 * 30, // 30분 동안 캐시 유지
+    queryFn: async () => {
+      const movies = await urlService.fetchPopularMovies(1);
+      return movies[0];
+    }
   });
 
   if (isLoading) return <p>Loading...</p>;
   if (isError) return <p>영화를 불러오는 중 오류가 발생했습니다: {error.message}</p>;
 
   return (
-    <div>
+    <div className="home-main">
       <Banner movie={featuredMovie} />
-      <MovieRow title="대세 콘텐츠" fetchUrl={urlService.getURL4PopularMovies()} />
-      <MovieRow title="최신 콘텐츠" fetchUrl={urlService.getURL4ReleaseMovies()} />
-      {/* 필요한 만큼 MovieRow 추가 */}
+      <MovieRow title="현재 인기 콘텐츠" fetchUrl={urlService.getURL4PopularMovies()} />
+      <MovieRow title="최신 개봉작" fetchUrl={urlService.getURL4ReleaseMovies()} />
+      <MovieRow title="높은 평점 영화" fetchUrl={urlService.getURL4TopRatedMovies()} />
+      <MovieRow title="인기 액션 영화" fetchUrl={urlService.getURL4GenreMovies('28')} />
+      <MovieRow title="인기 로맨스 영화" fetchUrl={urlService.getURL4GenreMovies('10749')} />
     </div>
   );
 }
