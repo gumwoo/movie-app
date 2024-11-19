@@ -2,6 +2,9 @@
 
 현대적인 UI/UX를 갖춘 Netflix 스타일의 영화 스트리밍 서비스 클론 프로젝트입니다.
 
+## 🌐 배포 링크
+**[넷플릭스 클론 웹사이트 바로가기](https://hilarious-lolly-e4a1fe.netlify.app/)**
+
 ## 🌟 주요 기능
 
 ### 인증 시스템 🔐
@@ -69,3 +72,10 @@
    - 조건부 렌더링
 
 ## 🚀 설치 및 실행
+
+### 온라인 데모
+- 배포된 웹사이트: https://hilarious-lolly-e4a1fe.netlify.app/
+- Netlify를 통한 지속적 배포 구현
+
+### 로컬 실행
+- http://localhost:3001/
