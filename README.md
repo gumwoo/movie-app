@@ -1,70 +1,71 @@
-# Getting Started with Create React App
+# 🎬 Netflix Clone Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+현대적인 UI/UX를 갖춘 Netflix 스타일의 영화 스트리밍 서비스 클론 프로젝트입니다.
 
-## Available Scripts
+## 🌟 주요 기능
 
-In the project directory, you can run:
+### 인증 시스템 🔐
+- 회원가입 및 로그인
+- Local Storage를 활용한 세션 관리
+- 보안된 라우팅 시스템
 
-### `npm start`
+### 홈 페이지 🏠
+- 동적 배너 표시
+- 카테고리별 영화 슬라이더
+- 반응형 레이아웃
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 영화 기능 🎥
+- TMDB API 기반 영화 정보 표시
+- 영화 검색 기능
+- 장르별 필터링
+- 무한 스크롤
+- 찜하기 기능
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### UI/UX 특징 ✨
+- 반응형 디자인 (모바일, 태블릿, 데스크톱)
+- 부드러운 애니메이션과 트랜지션
+- 직관적인 네비게이션
+- 모바일 최적화
 
-### `npm test`
+## 🛠 기술 스택
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend
+- **React.js** - 프레임워크
+- **Redux Toolkit** - 상태 관리
+- **React Query** - 서버 상태 관리
+- **React Router** - 라우팅
+- **Axios** - HTTP 클라이언트
 
-### `npm run build`
+### 스타일링
+- **CSS3** - 스타일링
+- **CSS Custom Properties** - 테마 관리
+- **CSS Animations** - 애니메이션
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### API
+- **TMDB API** - 영화 데이터
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 📱 반응형 디자인
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Desktop (1200px+)
+- Tablet (768px - 1199px)
+- Mobile (320px - 767px)
+- 다양한 화면 방향 지원 (Portrait/Landscape)
 
-### `npm run eject`
+## 💫 주요 구현 사항
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. **컴포넌트 구조**
+   - 재사용 가능한 컴포넌트 설계
+   - Props를 통한 데이터 전달
+   - Event Handling을 통한 상호작용
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. **상태 관리**
+   - Redux를 통한 전역 상태 관리
+   - React Query를 통한 서버 상태 관리
+   - Local Storage를 통한 영구 데이터 저장
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. **성능 최적화**
+   - 이미지 최적화
+   - 무한 스크롤 구현
+   - 조건부 렌더링
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 🚀 설치 및 실행
