@@ -8,10 +8,11 @@
     color: white;
     display: flex;
     align-items: flex-end;
-    margin-top: 50px;
+    margin-top: 70px; /* 50px에서 70px로 증가 */
     position: relative;
     margin-bottom: 0; /* 마진 제거 */
     z-index: 1;
+    padding-top: 60px; /* 추가: 헤더 높이만큼 패딩 추가 */
   }
   
   .banner-content {
@@ -181,7 +182,8 @@
   @media screen and (max-width: 768px) {
     .banner {
       height: 50vh;
-      margin-top: 60px;
+      margin-top: 80px; /* 60px에서 80px로 증가 */
+      padding-top: 50px; /* 모바일에서 패딩 조정 */
     }
 
     .banner h1 {
@@ -212,6 +214,8 @@
   @media screen and (max-width: 480px) {
     .banner {
       height: 40vh;
+      margin-top: 70px; /* 추가 */
+      padding-top: 40px; /* 더 작은 화면에서 패딩 감소 */
     }
 
     .banner h1 {
