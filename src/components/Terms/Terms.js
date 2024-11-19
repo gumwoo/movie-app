@@ -1,3 +1,5 @@
+// src/components/Terms/Terms.js
+
 import React from 'react';
 import './Terms.css';
 

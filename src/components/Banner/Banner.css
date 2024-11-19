@@ -1,3 +1,5 @@
+/* src/components/Banner/Banner.css*/
+
 .banner {
     height: 70vh;  /* 80vh에서 70vh로 줄임 */
     max-width: 100vw;  /* 95vw에서 100vw로 변경 */
