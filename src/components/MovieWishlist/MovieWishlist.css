@@ -2,45 +2,95 @@
 
 .wishlist-container {
   padding: 20px;
-  color: white;
-  background-color: #141414; /* 전체 배경색 */
   min-height: 100vh;
+  background-color: #141414;
 }
 
-.wishlist-container h2 {
-  margin-bottom: 20px;
-  font-size: 24px;
+.wishlist-header {
+  margin: 70px 0 30px;
+  text-align: center;
+  color: #fff;
+}
+
+.wishlist-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  background: linear-gradient(to right, #E50914, #ff6b6b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 20px;
+  gap: 25px;
+  padding: 20px;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
 .wishlist-movie-card {
   position: relative;
-  background-color: #222;
-  border-radius: 10px;
-  padding: 10px;
-  transition: transform 0.3s;
+  aspect-ratio: 2/3;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 }
 
 .wishlist-movie-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-10px);
+  box-shadow: 0 10px 20px rgba(229, 9, 20, 0.3);
 }
 
 .wishlist-movie-card img {
   width: 100%;
-  height: auto;
-  border-radius: 5px;
+  height: 100%;
+  object-fit: cover;
+}
+
+.movie-info-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.6), transparent);
+  padding: 20px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.wishlist-movie-card:hover .movie-info-overlay {
+  transform: translateY(0);
 }
 
 .movie-title {
-  margin-top: 10px;
-  font-size: 16px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.remove-button {
+  background-color: #E50914;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.remove-button:hover {
+  background-color: #ff0f1f;
+}
+
+.empty-wishlist {
   text-align: center;
+  color: #fff;
+  padding: 40px;
+  font-size: 1.2rem;
 }
 
 .wishlist-button {
@@ -82,10 +132,4 @@
 
 .pagination span {
   font-size: 16px;
-}
-
-.empty-wishlist {
-  text-align: center;
-  font-size: 18px;
-  margin-top: 50px;
 }
