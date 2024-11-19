@@ -17,9 +17,6 @@ function MovieWishlist() {
     dispatch(toggleWishlist(movie));
   };
 
-  const isInWishlist = (movieId) => {
-    return wishlist.some((movie) => movie.id === movieId);
-  };
 
   const indexOfLastMovie = currentPage * moviesPerPage;
   const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
@@ -44,38 +41,45 @@ function MovieWishlist() {
 
   return (
     <div className="wishlist-container">
-      <h2>내가 찜한 리스트</h2>
+      <div className="wishlist-header">
+        <p>총 {wishlist.length}개의 영화를 찜하셨습니다</p>
+      </div>
+      
       {wishlist.length === 0 ? (
-        <div className="empty-wishlist">위시리스트가 비어 있습니다.</div>
+        <div className="empty-wishlist">
+          <p>아직 찜한 영화가 없습니다.</p>
+          <p>마음에 드는 영화를 찜해보세요!</p>
+        </div>
       ) : (
-        <>
-          <div className="grid-container">
-            {currentMovies.map((movie) => (
-              <div key={movie.id} className="wishlist-movie-card">
-                <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
-                <div className="movie-title">{movie.title}</div>
+        <div className="grid-container">
+          {currentMovies.map((movie) => (
+            <div key={movie.id} className="wishlist-movie-card">
+              <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
+              <div className="movie-info-overlay">
+                <h3 className="movie-title">{movie.title}</h3>
                 <button
-                  className="wishlist-button"
+                  className="remove-button"
                   onClick={() => handleToggleWishlist(movie)}
                 >
-                  {isInWishlist(movie.id) ? '찜 취소' : '찜하기'}
+                  찜 취소
                 </button>
               </div>
-            ))}
-          </div>
-          <div className="pagination">
-            <button onClick={handlePrevPage} disabled={currentPage === 1}>
-              이전
-            </button>
-            <span>
-              {currentPage} / {totalPages}
-            </span>
-            <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-              다음
-            </button>
-          </div>
-        </>
+            </div>
+          ))}
+        </div>
       )}
+      
+      <div className="pagination">
+        <button onClick={handlePrevPage} disabled={currentPage === 1}>
+          이전
+        </button>
+        <span>
+          {currentPage} / {totalPages}
+        </span>
+        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          다음
+        </button>
+      </div>
     </div>
   );
 }
