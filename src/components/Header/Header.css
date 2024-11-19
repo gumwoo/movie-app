@@ -172,6 +172,10 @@
     color: var(--header-text-color);
     margin-right: 15px;
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
   }
   
   .logout-button {
@@ -246,6 +250,11 @@
       font-size: 1rem;
       padding: 12px 0;
     }
+
+    .user-info {
+      max-width: 150px;
+      font-size: 0.9rem;
+    }
   }
 
 @media screen and (max-width: 480px) {
@@ -264,7 +273,10 @@
   }
 
   .user-info {
-    display: none;
+    max-width: 120px;
+    font-size: 0.8rem;
+    margin-right: 10px;
+    display: block; /* display: none 제거 */
   }
 
   .logout-button {
