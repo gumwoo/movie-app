@@ -50,7 +50,10 @@
     color: var(--header-text-color);
     text-decoration: none;
     font-size: 1rem;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
   }
   
   .nav-links a:hover {
@@ -178,10 +181,33 @@
     padding: 8px 15px;
     background-color: var(--button-background);
     border-radius: 4px;
+    font-size: 1rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
   }
   
   .logout-button:hover {
     background-color: #c11119;
+  }
+  
+  @media (max-width: 1024px) {
+    .nav-links a {
+      font-size: 0.9rem;
+    }
+    
+    .nav-links li {
+      margin-right: 12px;
+    }
+  }
+  
+  @media (max-width: 900px) {
+    .nav-links a {
+      font-size: 0.85rem;
+    }
+    
+    .nav-links li {
+      margin-right: 8px;
+    }
   }
   
   @media (max-width: 768px) {
@@ -206,4 +232,69 @@
       text-align: left;
       font-size: 1.15rem !important;
     }
+
+    .logout-button {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+  
+    .logout-button span {
+      display: none;  /* 텍스트 숨기기 */
+    }
+
+    .mobile-nav a {
+      font-size: 1rem;
+      padding: 12px 0;
+    }
   }
+
+@media screen and (max-width: 480px) {
+  .app-header {
+    height: 50px;
+    padding: 8px 3%;
+  }
+
+  .logo {
+    height: 35px;
+    margin-right: 10px;
+  }
+
+  .mobile-nav {
+    width: 85%;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .logout-button {
+    padding: 6px;
+    min-width: 32px;
+    justify-content: center;
+  }
+
+  .mobile-nav a {
+    font-size: 0.9rem;
+    padding: 10px 0;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .app-header {
+    padding: 5px 2%;
+  }
+
+  .logo {
+    height: 30px;
+  }
+
+  .logout-button {
+    padding: 4px;
+    min-width: 28px;
+  }
+
+  .mobile-nav a {
+    font-size: 0.85rem;
+    padding: 8px 0;
+  }
+}

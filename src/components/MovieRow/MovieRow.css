@@ -140,3 +140,26 @@
       padding: 15px 8px;
     }
   }
+
+  @media screen and (max-width: 480px) {
+    .row-movie-card {
+      width: 140px;
+      margin-right: 10px;
+    }
+
+    .movie-row h2 {
+      font-size: 1.2rem;
+      margin-left: 15px;
+    }
+
+    .slider-button {
+      padding: 15px 8px;
+      font-size: 12px;
+    }
+  }
+
+  @media (hover: none) {
+    .slider-button {
+      display: none;
+    }
+  }
