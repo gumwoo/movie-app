@@ -39,8 +39,13 @@ function MovieInfiniteScroll({ genreCode, sortingOrder, voteEverage }) {
       });
     },
     getNextPageParam: (lastPage) => {
-      if (lastPage.page >= lastPage.total_pages) return undefined;
-      return lastPage.page + 1;
+      // lastPage가 없거나 results가 비어있으면 더 이상 데이터를 가져오지 않음
+      if (!lastPage || !lastPage.results || lastPage.results.length === 0) {
+        return undefined;
+      }
+      
+      // 현재 페이지가 총 페이지 수보다 작으면 다음 페이지 가져오기
+      return lastPage.page < lastPage.total_pages ? lastPage.page + 1 : undefined;
     },
     staleTime: 1000 * 60 * 5,
     cacheTime: 1000 * 60 * 30,

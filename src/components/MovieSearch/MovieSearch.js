@@ -12,14 +12,21 @@ function MovieSearch({ changeOptions }) {
   const [selectedOptions, setSelectedOptions] = useState({
     originalLanguage: '장르 (전체)',
     translationLanguage: '평점 (전체)',
-    sorting: '언어 (전체)',
+    sorting: '정렬 (기본)'
   });
   const [activeDropdown, setActiveDropdown] = useState(null);
 
   const dropdowns = {
-    originalLanguage: ['장르 (전체)', 'Action', 'Adventure', 'Comedy', 'Crime', 'Family'],
-    translationLanguage: ['평점 (전체)', '9~10', '8~9', '7~8', '6~7', '5~6', '4~5', '4점 이하'],
-    sorting: ['언어 (전체)', '영어', '한국어'],
+    originalLanguage: ['장르 (전체)', 'Action', 'Comedy', 'Drama', 'Horror', 'Romance'], // 장르 수 축소
+    translationLanguage: ['평점 (전체)', '9~10', '8~9', '7~8', '6~7', '5~6'],
+    sorting: ['정렬 (기본)', '평점 높은순', '평점 낮은순', '최신순','오래된순']
+  };
+
+  // 드롭다운 레이블 매핑 추가
+  const dropdownLabels = {
+    originalLanguage: '장르',
+    translationLanguage: '평점',
+    sorting: '정렬'
   };
 
   const dropdownEntries = Object.entries(dropdowns).map(([key, options]) => ({
@@ -78,7 +85,7 @@ function MovieSearch({ changeOptions }) {
     const defaultOptions = {
       originalLanguage: '장르 (전체)',
       translationLanguage: '평점 (전체)',
-      sorting: '언어 (전체)',
+      sorting: '정렬 (기본)'
     };
     setSelectedOptions(defaultOptions);
     changeOptions(defaultOptions);
@@ -108,28 +115,29 @@ function MovieSearch({ changeOptions }) {
           </ul>
         )}
       </form>
-
-      <label>선호하는 설정을 선택하세요</label>
-      <div className="dropdown-container">
-        {dropdownEntries.map((dropdown) => (
-          <div key={dropdown.key} className="custom-select">
-            <div className="select-selected" onClick={() => toggleDropdown(dropdown.key)}>
-              {selectedOptions[dropdown.key]}
-            </div>
-            {activeDropdown === dropdown.key && (
-              <div className="select-items">
-                {dropdown.options.map((option) => (
-                  <div key={option} onClick={() => selectOption(dropdown.key, option)}>
-                    {option}
-                  </div>
-                ))}
+      <div className="filter-section">
+        <h3>필터링 옵션</h3>
+        <div className="dropdown-container">
+          {dropdownEntries.map((dropdown) => (
+            <div key={dropdown.key} className="custom-select">
+              <div className="select-selected" onClick={() => toggleDropdown(dropdown.key)}>
+                {dropdownLabels[dropdown.key]}: {selectedOptions[dropdown.key]}
               </div>
-            )}
-          </div>
-        ))}
-        <button className="clear-options" onClick={clearOptions}>
-          초기화
-        </button>
+              {activeDropdown === dropdown.key && (
+                <div className="select-items">
+                  {dropdown.options.map((option) => (
+                    <div key={option} onClick={() => selectOption(dropdown.key, option)}>
+                      {option}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          <button className="clear-options" onClick={clearOptions}>
+            초기화
+          </button>
+        </div>
       </div>
     </div>
   );

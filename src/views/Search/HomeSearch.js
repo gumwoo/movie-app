@@ -6,9 +6,9 @@ import MovieInfiniteScroll from '../../components/MovieInfiniteScroll/MovieInfin
 import './HomeSearch.css';
 
 function HomeSearch() {
-  const [genreId, setGenreId] = useState('28');
+  const [genreId, setGenreId] = useState('0');  // 28에서 0으로 변경
   const [ageId, setAgeId] = useState(-1);
-  const [sortId, setSortId] = useState('all');
+  const [sortId, setSortId] = useState('popularity.desc');
 
   const genreCode = {
     '장르 (전체)': '0',
@@ -17,12 +17,18 @@ function HomeSearch() {
     'Comedy': '35',
     'Crime': '80',
     'Family': '10751',
+    'Drama': '18',
+    'Fantasy': '14',
+    'Horror': '27',
+    'Romance': '10749'
   };
 
   const sortingCode = {
-    '언어 (전체)': 'all',
-    '영어': 'en',
-    '한국어': 'ko',
+    '정렬 (기본)': 'popularity.desc',
+    '평점 높은순': 'vote_average.desc',
+    '평점 낮은순': 'vote_average.asc',
+    '최신순': 'release_date.desc',
+    '오래된순': 'release_date.asc'
   };
 
   const ageCode = {
@@ -39,7 +45,7 @@ function HomeSearch() {
   const changeOptions = (options) => {
     setGenreId(genreCode[options.originalLanguage]);
     setAgeId(ageCode[options.translationLanguage]);
-    setSortId(sortingCode[options.sorting]);
+    setSortId(sortingCode[options.sorting] || 'popularity.desc');
   };
 
   return (
