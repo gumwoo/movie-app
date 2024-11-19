@@ -96,3 +96,28 @@
 .custom-wishlist-button.in-wishlist {
   background-color: #28a745;
 }
+
+@media screen and (max-width: 480px) {
+  .custom-movie-card {
+    width: 140px;
+    height: 210px;
+    margin: 8px;
+  }
+
+  .custom-movie-title {
+    font-size: 12px;
+  }
+
+  .custom-wishlist-button {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .custom-movie-card {
+    width: 120px;
+    height: 180px;
+    margin: 5px;
+  }
+}

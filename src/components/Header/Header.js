@@ -87,7 +87,8 @@ function Header() {
             onClick={removeKey} 
             aria-label="로그아웃"
           >
-            <FontAwesomeIcon icon={faSignOutAlt} /> 로그아웃
+            <FontAwesomeIcon icon={faSignOutAlt} />
+            <span>로그아웃</span> {/* span으로 감싸서 모바일에서 숨길 수 있도록 */}
           </button>
           <button
             className={`mobile-menu-button ${isMobileMenuOpen ? 'open' : ''}`}
