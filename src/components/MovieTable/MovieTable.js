@@ -1,3 +1,5 @@
+/* src/components/MovieTable/MovieTable.js */
+
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useDispatch, useSelector } from 'react-redux';
