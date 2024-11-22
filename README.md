@@ -72,10 +72,36 @@
    - 조건부 렌더링
 
 ## 🚀 설치 및 실행
+### 📦 설치
+- 프로젝트를 로컬 환경에 설치하고 실행하기 위한 단계는 다음과 같습니다.
+
+#### 의존성 설치
+- 프로젝트에 필요한 모든 의존성을 설치합니다.
+ -npm install
+#### 주요 패키지 설치 내역
+- 프로젝트에 필요한 주요 패키지들을 명시적으로 설치합니다.
+### 코어 패키지
+- npm install react@18.3.1 react-dom@18.3.1
+- npm install @reduxjs/toolkit@2.3.0 react-redux@9.1.2
+- npm install @tanstack/react-query@5.59.19
+- npm install react-router-dom@6.27.0
+- npm install axios@1.7.7
+- npm install framer-motion@11.11.17
+
+### UI 관련 패키지
+
+- npm install @fortawesome/fontawesome-svg-core@6.6.0
+- npm install @fortawesome/free-solid-svg-icons@6.6.0
+- npm install @fortawesome/react-fontawesome@0.2.2
+- npm install react-lazy-load-image-component@1.6.2
+- npm install react-toastify@10.0.6
+
+### 개발 도구
+- npm install -D @babel/plugin-proposal-private-property-in-object@7.21.11
+### 개발 서버 실행 (http://localhost:3001)
+npm start
 
 ### 온라인 데모
 - 배포된 웹사이트: https://hilarious-lolly-e4a1fe.netlify.app/
 - Netlify를 통한 지속적 배포 구현
 
-### 로컬 실행
-- http://localhost:3001/
