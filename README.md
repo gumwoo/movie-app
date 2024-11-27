@@ -2,6 +2,9 @@
 
 현대적인 UI/UX를 갖춘 Netflix 스타일의 영화 스트리밍 서비스 클론 프로젝트입니다.
 
+## 📸 스크린샷
+![Netflix Clone Screenshot](./image.png)
+
 ## 🌐 배포 링크
 **[넷플릭스 클론 웹사이트 바로가기](https://hilarious-lolly-e4a1fe.netlify.app/)**
 
